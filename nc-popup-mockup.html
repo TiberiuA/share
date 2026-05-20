@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mock-up — Commission Changes Popup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #111827;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 32px 24px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .popup {
+    background: #1a1f2e;
+    border: 1.5px solid #4c3f8a;
+    border-radius: 16px;
+    width: 720px;
+    max-width: 100%;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(76, 63, 138, 0.35);
+  }
+
+  /* ── Header ── */
+  .popup-header {
+    padding: 20px 26px 16px;
+    border-bottom: 1px solid #2a2f42;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .header-icon {
+    background: #2d3561;
+    border-radius: 10px;
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .header-text h2 {
+    color: #fff;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .header-text p {
+    color: #9ca3af;
+    font-size: 9pt;
+    line-height: 1.55;
+  }
+  .header-text strong { color: #d1d5db; }
+
+  /* ── Body ── */
+  .popup-body {
+    padding: 18px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ── Generic card ── */
+  .card {
+    background: #232840;
+    border-radius: 10px;
+    border: 1px solid #2e3450;
+    overflow: hidden;
+  }
+  .card-title {
+    background: #2d3561;
+    padding: 7px 14px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #a5b4fc;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  /* ── Category + Standard: merged card ── */
+  .catcomm-grid {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr;
+    padding: 14px 16px;
+    gap: 0;
+    align-items: center;
+  }
+  .catcomm-side {}
+  .catcomm-arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4c3f8a;
+    font-size: 16pt;
+  }
+  .catcomm-arrow-col.up   { color: #ffffff; }
+  .catcomm-arrow-col.down { color: #34d399; }
+  .field-label {
+    font-size: 7pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .field-value-old {
+    color: #9ca3af;
+    font-size: 11.5pt;
+    font-weight: 600;
+    text-decoration: line-through;
+    text-decoration-color: #6b7280;
+  }
+  .field-value-new {
+    color: #fff;
+    font-size: 11.5pt;
+    font-weight: 700;
+  }
+  .field-value-new.down { color: #34d399; }
+  .field-value-new.up   { color: #ffffff; }
+
+  .catcomm-divider {
+    border: none;
+    border-top: 1px dashed #2e3450;
+    margin: 10px 16px 0;
+  }
+  .catcomm-rate-row {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr;
+    padding: 10px 16px 14px;
+    align-items: center;
+    gap: 0;
+  }
+  .rate-label {
+    font-size: 7pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .rate-sub {
+    font-size: 7.5pt;
+    color: #6b7280;
+    margin-top: 3px;
+  }
+
+  /* ── Calculation block ── */
+  .calc-card {
+    background: #232840;
+    border-radius: 10px;
+    border: 1px solid #2e3450;
+    overflow: hidden;
+  }
+  .calc-title {
+    background: #2d3561;
+    padding: 7px 14px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #a5b4fc;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .calc-title span {
+    color: #6b7280;
+    font-size: 7pt;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .calc-body {
+    padding: 14px 16px;
+  }
+
+  /* The formula rows */
+  .calc-start {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #1e2235;
+    border-radius: 7px;
+    border: 1px solid #2e3450;
+    margin-bottom: 6px;
+  }
+  .calc-start-label { color: #9ca3af; font-size: 9pt; }
+  .calc-start-val   { color: #d1d5db; font-size: 11pt; font-weight: 700; }
+
+  .calc-discount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 7px;
+    border: 1px solid #2e3450;
+    background: #1a1f2e;
+  }
+  .calc-discount-left {}
+  .calc-discount-name { color: #d1d5db; font-size: 9pt; font-weight: 600; }
+  .calc-discount-sub  { color: #6b7280; font-size: 7.5pt; margin-top: 2px; }
+  .calc-discount-val-active { color: #34d399; font-size: 10pt; font-weight: 700; }
+  .calc-discount-val-zero   { color: #4b5563; font-size: 10pt; font-weight: 600; }
+
+  .calc-equals {
+    border-top: 1px solid #2e3450;
+    margin: 8px 0;
+  }
+  .calc-result {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #1e1b4b;
+    border-radius: 7px;
+    border: 1px solid #4c3f8a;
+    margin-top: 6px;
+  }
+  .calc-result-old-block { text-align: left; }
+  .calc-result-old-label { color: #6b7280; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; margin-bottom: 3px; }
+  .calc-result-old-val   { color: #6b7280; font-size: 15pt; font-weight: 700; text-decoration: line-through; text-decoration-color: #4b5563; }
+  .calc-result-arrow     { color: #4c3f8a; font-size: 18pt; text-align: center; }
+  .calc-result-arrow.down { color: #34d399; }
+  .calc-result-arrow.up   { color: #ffffff; }
+  .calc-result-new-block { text-align: right; }
+  .calc-result-new-label { color: #a5b4fc; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; margin-bottom: 3px; }
+  .calc-result-val.down { color: #34d399; font-size: 18pt; font-weight: 800; }
+  .calc-result-val.up   { color: #ffffff; font-size: 18pt; font-weight: 800; }
+  .change-pill {
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 5px;
+  }
+  .change-pill.down { background: #064e3b; color: #34d399; }
+  .change-pill.up   { background: #374151; color: #ffffff; }
+
+  /* ── Subscription ── */
+  .sub-card {
+    background: linear-gradient(135deg, #1e1b4b, #2d3561);
+    border-radius: 10px;
+    border: 1px solid #4c3f8a;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .sub-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .sub-text h4 { color: #fff; font-size: 10pt; font-weight: 700; margin-bottom: 5px; }
+  .sub-text p  { color: #a5b4fc; font-size: 8.5pt; line-height: 1.6; }
+  .sub-text strong { color: #fff; }
+  .sub-badge {
+    background: #7c3aed;
+    color: #fff;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 7px;
+  }
+
+  /* ── Footer ── */
+  .popup-footer {
+    background: #141827;
+    border-top: 1px solid #2a2f42;
+    padding: 12px 26px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn-confirm {
+    background: linear-gradient(135deg, #6d28d9, #4c3f8a);
+    color: #fff;
+    border: none;
+    padding: 11px 30px;
+    border-radius: 8px;
+    font-size: 10pt;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* Scenario label */
+  .scenario-label {
+    color: #6b7280;
+    font-size: 8.5pt;
+    text-align: center;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .popup-wrap { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     SCENARIO A — Commission decreases
+     ═══════════════════════════════ -->
+<div class="popup-wrap">
+<div class="scenario-label">↓ Commission decrease — with discounts</div>
+<div class="popup">
+  <div class="popup-header">
+    <div class="header-icon">📋</div>
+    <div class="header-text">
+      <h2>Your commission structure is changing</h2>
+      <p>The following changes apply to <strong>Exemplu Store SRL</strong> starting <strong>July 1st, 2026</strong>. Please review the details below.</p>
+    </div>
+  </div>
+
+  <div class="popup-body">
+
+    <!-- Category + Standard Commission — merged card -->
+    <div class="card">
+      <div class="card-title">Category &amp; Standard Commission Rate</div>
+      <!-- Category row -->
+      <div class="catcomm-grid">
+        <div class="catcomm-side">
+          <div class="field-label">Current category</div>
+          <div class="field-value-old">Fashion</div>
+        </div>
+        <div class="catcomm-arrow-col">→</div>
+        <div class="catcomm-side">
+          <div class="field-label">New category — from July 1st</div>
+          <div class="field-value-new">Fashion › Clothing &amp; General</div>
+        </div>
+      </div>
+      <!-- Divider -->
+      <hr class="catcomm-divider">
+      <!-- Standard rate row -->
+      <div class="catcomm-rate-row">
+        <div>
+          <div class="rate-label">Standard commission rate</div>
+          <div class="field-value-old" style="font-size:13pt;">8.00%</div>
+        </div>
+        <div class="catcomm-arrow-col down">→</div>
+        <div>
+          <div class="rate-label">Standard commission rate</div>
+          <div class="field-value-new down" style="font-size:13pt;">7.00%</div>
+          <div class="rate-sub">Base rate for your new category</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculation block -->
+    <div class="calc-card">
+      <div class="calc-title">
+        Your Commission Rate
+        <span>— how your rate is calculated</span>
+      </div>
+      <div class="calc-body">
+
+        <div class="calc-start">
+          <div class="calc-start-label">Standard commission rate (new category)</div>
+          <div class="calc-start-val">7.00%</div>
+        </div>
+
+        <div class="calc-discount-row">
+          <div class="calc-discount-left">
+            <div class="calc-discount-name">🏅 Loyalty Discount</div>
+            <div class="calc-discount-sub">Active for 12+ months</div>
+          </div>
+          <div class="calc-discount-val-active">− 1.00%</div>
+        </div>
+
+        <div class="calc-discount-row">
+          <div class="calc-discount-left">
+            <div class="calc-discount-name">⚡ Performance Discount</div>
+            <div class="calc-discount-sub">Unicorns segment</div>
+          </div>
+          <div class="calc-discount-val-active">− 0.80%</div>
+        </div>
+
+        <div class="calc-equals"></div>
+
+        <div class="calc-result">
+          <div class="calc-result-old-block">
+            <div class="calc-result-old-label">Until July 1st</div>
+            <div class="calc-result-old-val">6.50%</div>
+          </div>
+          <div class="calc-result-arrow down">→</div>
+          <div class="calc-result-new-block">
+            <div class="calc-result-new-label">From July 1st</div>
+            <div class="calc-result-val down">5.20%</div>
+            <div class="change-pill down" style="float:right;">▼ −1.30 pp</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Subscription -->
+    <div class="sub-card">
+      <div class="sub-icon">💎</div>
+      <div class="sub-text">
+        <h4>One plan for everyone — Plus 99 EUR/month</h4>
+        <p>
+          Starting <strong>July 1st, 2026</strong>, all publishers move to a single subscription.
+          Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.
+        </p>
+        <span class="sub-badge">Plus — 99 EUR / month</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="popup-footer">
+    <button class="btn-confirm">I acknowledge ✓</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     SCENARIO B — Commission increases, no discounts
+     ═══════════════════════════════ -->
+<div class="popup-wrap">
+<div class="scenario-label">↑ Commission increase — no discounts</div>
+<div class="popup">
+  <div class="popup-header">
+    <div class="header-icon">📋</div>
+    <div class="header-text">
+      <h2>Your commission structure is changing</h2>
+      <p>The following changes apply to <strong>Another Store SRL</strong> starting <strong>July 1st, 2026</strong>. Please review the details below.</p>
+    </div>
+  </div>
+
+  <div class="popup-body">
+
+    <!-- Category + Standard Commission — merged card -->
+    <div class="card">
+      <div class="card-title">Category &amp; Standard Commission Rate</div>
+      <div class="catcomm-grid">
+        <div class="catcomm-side">
+          <div class="field-label">Current category</div>
+          <div class="field-value-old">Games</div>
+        </div>
+        <div class="catcomm-arrow-col">→</div>
+        <div class="catcomm-side">
+          <div class="field-label">New category — from July 1st</div>
+          <div class="field-value-new">Games</div>
+        </div>
+      </div>
+      <hr class="catcomm-divider">
+      <div class="catcomm-rate-row">
+        <div>
+          <div class="rate-label">Standard commission rate</div>
+          <div class="field-value-old" style="font-size:13pt;">7.00%</div>
+        </div>
+        <div class="catcomm-arrow-col up">→</div>
+        <div>
+          <div class="rate-label">Standard commission rate</div>
+          <div class="field-value-new up" style="font-size:13pt;">9.00%</div>
+          <div class="rate-sub">Base rate for your new category</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculation block — no discounts -->
+    <div class="calc-card">
+      <div class="calc-title">
+        Your Commission Rate
+        <span>— how your rate is calculated</span>
+      </div>
+      <div class="calc-body">
+
+        <div class="calc-start">
+          <div class="calc-start-label">Standard commission rate (new category)</div>
+          <div class="calc-start-val">9.00%</div>
+        </div>
+
+        <div class="calc-discount-row">
+          <div class="calc-discount-left">
+            <div class="calc-discount-name">🏅 Loyalty Discount</div>
+            <div class="calc-discount-sub">Under 12 months — not yet eligible</div>
+          </div>
+          <div class="calc-discount-val-zero">− 0.00%</div>
+        </div>
+
+        <div class="calc-discount-row">
+          <div class="calc-discount-left">
+            <div class="calc-discount-name">⚡ Performance Discount</div>
+            <div class="calc-discount-sub">Freelancer level — 0 discount</div>
+          </div>
+          <div class="calc-discount-val-zero">− 0.00%</div>
+        </div>
+
+        <div class="calc-equals"></div>
+
+        <div class="calc-result">
+          <div class="calc-result-old-block">
+            <div class="calc-result-old-label">Until July 1st</div>
+            <div class="calc-result-old-val">5.50%</div>
+          </div>
+          <div class="calc-result-arrow up">→</div>
+          <div class="calc-result-new-block">
+            <div class="calc-result-new-label">From July 1st</div>
+            <div class="calc-result-val up">9.00%</div>
+            <div class="change-pill up" style="float:right;">▲ +3.50 pp</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Subscription -->
+    <div class="sub-card">
+      <div class="sub-icon">💎</div>
+      <div class="sub-text">
+        <h4>One plan for everyone — Plus 99 EUR/month</h4>
+        <p>
+          Starting <strong>July 1st, 2026</strong>, all publishers move to a single subscription.
+          Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.
+        </p>
+        <span class="sub-badge">Plus — 99 EUR / month</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="popup-footer">
+    <button class="btn-confirm">I acknowledge ✓</button>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
