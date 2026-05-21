@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Mock-up v2 — Pop-up Noile Condiții (Dorin feedback)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .section-label {
+    color: #6b7280;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════
+     POPUP OVERLAY SIMULATION
+  ═══════════════════════════════════════ */
+  .overlay-sim {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+  }
+  .blurred-bg {
+    background: linear-gradient(135deg, #1a1d2e 0%, #0f1117 100%);
+    border-radius: 20px;
+    padding: 40px;
+    filter: blur(3px);
+    opacity: 0.4;
+    height: 260px;
+  }
+  .popup-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 680px;
+    max-width: calc(100% - 32px);
+  }
+
+  /* ═══════════════════════════════════════
+     POPUP
+  ═══════════════════════════════════════ */
+  .popup {
+    background: #16192a;
+    border: 1.5px solid #3730a3;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(99, 102, 241, 0.15),
+      0 32px 80px rgba(0,0,0,0.6),
+      0 0 60px rgba(99, 102, 241, 0.1);
+  }
+
+  /* ── Pill badge ── */
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #818cf8;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    background: #818cf8;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* ── Header ── */
+  .popup-header {
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid #1f2340;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header-title {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-top: 8px;
+  }
+  .header-sub {
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .close-btn {
+    width: 28px;
+    height: 28px;
+    background: #1f2340;
+    border: 1px solid #2e3260;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .close-btn:hover { background: #2e3260; color: #fff; }
+
+  /* ── Body ── */
+  .popup-body {
+    padding: 20px 26px;
+  }
+
+  /* ── THE ONE TABLE (Dorin: un singur tabel) ── */
+  .main-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    border: 1px solid #1f2340;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .main-table thead tr {
+    background: #1a1d30;
+  }
+  .main-table thead th {
+    color: #6b7280;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid #1f2340;
+  }
+  .main-table tbody tr {
+    border-bottom: 1px solid #1a1d30;
+    transition: background 0.1s;
+  }
+  .main-table tbody tr:last-child { border-bottom: none; }
+  .main-table tbody tr:hover { background: rgba(99,102,241,0.04); }
+  .main-table tbody td {
+    padding: 11px 14px;
+    font-size: 12.5px;
+    color: #d1d5db;
+    vertical-align: middle;
+  }
+
+  /* Row label */
+  .row-label {
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Category change: old → new */
+  .cat-old {
+    color: #6b7280;
+    text-decoration: line-through;
+    font-size: 11px;
+  }
+  .cat-arrow {
+    color: #4b5563;
+    margin: 0 4px;
+    font-size: 10px;
+  }
+  .cat-new {
+    color: #a5b4fc;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+
+  /* Commission change */
+  .comm-old {
+    color: #6b7280;
+    font-size: 11px;
+    text-decoration: line-through;
+    margin-right: 4px;
+  }
+  .comm-new {
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .comm-change-up {
+    color: #34d399;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+    background: rgba(52, 211, 153, 0.12);
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .comm-change-down {
+    color: #f87171;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+    background: rgba(248, 113, 113, 0.12);
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  /* Affiliate bonus highlight */
+  .aff-q3 {
+    color: #34d399;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .aff-q4 {
+    color: #86efac;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+  .aff-label {
+    color: #6b7280;
+    font-size: 10px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Plan row */
+  .plan-val {
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .plan-old {
+    color: #6b7280;
+    font-size: 11px;
+    text-decoration: line-through;
+    margin-right: 5px;
+  }
+
+  /* ── Key message ── */
+  .key-message {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .key-message-icon { font-size: 20px; flex-shrink: 0; }
+  .key-message-text {
+    font-size: 12px;
+    color: #d1d5db;
+    line-height: 1.5;
+  }
+  .key-message-text strong { color: #34d399; }
+
+  /* ── Loyalty link ── */
+  .loyalty-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1a1d30;
+    border: 1px solid #1f2340;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .loyalty-link:hover { border-color: #3730a3; }
+  .loyalty-link-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .loyalty-link-icon {
+    width: 30px;
+    height: 30px;
+    background: rgba(99,102,241,0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .loyalty-link-text {
+    font-size: 11.5px;
+    color: #9ca3af;
+  }
+  .loyalty-link-text strong { color: #d1d5db; font-size: 12px; }
+  .loyalty-link-arrow { color: #4b5563; font-size: 16px; }
+
+  /* ── Footer ── */
+  .popup-footer {
+    padding: 14px 26px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid #1f2340;
+  }
+  .footer-meta {
+    font-size: 10.5px;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+  .footer-meta strong { color: #9ca3af; }
+  .btn-acknowledge {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+  }
+  .btn-acknowledge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  }
+  .btn-later {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #2e3260;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-later:hover { color: #9ca3af; border-color: #4b5563; }
+
+  /* ════════════════════════════
+     VARIANTS GRID
+  ════════════════════════════ */
+  .variants-grid {
+    display: flex;
+    gap: 32px;
+    width: 100%;
+    max-width: 1400px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .variant-box {
+    flex: 1;
+    min-width: 600px;
+    max-width: 700px;
+  }
+  .variant-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .variant-title span {
+    background: #1a1d30;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid #2e3260;
+  }
+
+  /* Commission INCREASE variant */
+  .popup.variant-up { border-color: #065f46; }
+  .popup.variant-up .loyalty-link { border-color: #064e3b; }
+
+  /* Commission DECREASE variant */
+  .popup.variant-down { border-color: #7f1d1d; }
+  .popup.variant-down .loyalty-link { border-color: #7f1d1d; }
+  .popup.variant-down .comm-new { color: #fca5a5; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+  SECTION 1: POPUP CONTEXT (magazin cu CREȘTERE)
+══════════════════════════════════════════════ -->
+<div style="width:100%;max-width:1400px;">
+  <p class="section-label">⬆ Varianta A — Comision crește (magazin câștigă condiții mai bune)</p>
+
+  <div class="variants-grid">
+    <div class="variant-box">
+      <div class="popup">
+
+        <!-- Header -->
+        <div class="popup-header">
+          <div class="header-top">
+            <div>
+              <div class="pill-badge"><div class="pill-dot"></div>Actualizare importantă</div>
+              <div class="header-title">Condiții noi pentru magazinul tău<br>de la 1 iulie 2026</div>
+              <div class="header-sub">Decizia Consiliului de Administrație · <strong>Aplicare automată</strong></div>
+            </div>
+            <div class="close-btn">✕</div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="popup-body">
+
+          <!-- Key message -->
+          <div class="key-message">
+            <div class="key-message-icon">🚀</div>
+            <div class="key-message-text">
+              <strong>Afiliații tăi vor primi mai mulți bani de la 1 iulie</strong> și îți vor genera mai multe vânzări.
+            </div>
+          </div>
+
+          <!-- THE ONE TABLE (Dorin: un singur tabel, 5-6 rânduri, first screen) -->
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th style="width:40%">Ce se schimbă</th>
+                <th>Înainte</th>
+                <th>De la 1 iulie 2026</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-label">Categorie</td>
+                <td><span class="cat-old">Fashion</span></td>
+                <td><span class="cat-new">Fashion · Clothing</span></td>
+              </tr>
+              <tr>
+                <td class="row-label">Comision rețea</td>
+                <td><span class="comm-old">8%</span></td>
+                <td>
+                  <span class="comm-new">9%</span>
+                  <span class="comm-change-up">↑ +1%</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Bonus afiliați — Q3 2026</td>
+                <td><span style="color:#6b7280;font-size:11px;">—</span></td>
+                <td>
+                  <span class="aff-q3">+1% per vânzare</span>
+                  <span class="aff-label">100% din diferență → afiliații tăi</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Bonus afiliați — Q4 2026</td>
+                <td><span style="color:#6b7280;font-size:11px;">—</span></td>
+                <td>
+                  <span class="aff-q4">+0.5% per vânzare</span>
+                  <span class="aff-label">50% din diferență → afiliații tăi</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Abonament lunar</td>
+                <td><span class="plan-old">variabil</span></td>
+                <td><span class="plan-val">99 EUR / lună</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Loyalty link (Dorin: loialty tiers nu le arătăm în popup, doar link) -->
+          <a class="loyalty-link" href="#">
+            <div class="loyalty-link-left">
+              <div class="loyalty-link-icon">🏆</div>
+              <div class="loyalty-link-text">
+                <strong>Discount-uri loialitate &amp; performanță</strong><br>
+                Ești în runda 7 · 18 luni vechime · vezi condițiile tale complete
+              </div>
+            </div>
+            <div class="loyalty-link-arrow">→</div>
+          </a>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="popup-footer">
+          <div class="footer-meta">
+            <strong>Am înțeles și accept noile condiții.</strong><br>
+            Aplicare automată din 1 iulie. Dacă nu ești de acord, contactează echipa.
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-later">Amintește-mi mai târziu</button>
+            <button class="btn-acknowledge">Am înțeles ✓</button>
+          </div>
+        </div>
+
+      </div><!-- .popup -->
+    </div><!-- .variant-box -->
+  </div><!-- .variants-grid -->
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+  SECTION 2: VARIANTA SCĂDERE COMISION
+══════════════════════════════════════════════ -->
+<div style="width:100%;max-width:1400px;">
+  <p class="section-label">⬇ Varianta B — Comision scade (magazin cu volum mare, NC scade, bonus afiliat din diferență)</p>
+
+  <div class="variants-grid">
+    <div class="variant-box">
+      <div class="popup variant-down">
+
+        <div class="popup-header">
+          <div class="header-top">
+            <div>
+              <div class="pill-badge"><div class="pill-dot"></div>Actualizare importantă</div>
+              <div class="header-title">Condiții noi pentru magazinul tău<br>de la 1 iulie 2026</div>
+              <div class="header-sub">Decizia Consiliului de Administrație · <strong>Aplicare automată</strong></div>
+            </div>
+            <div class="close-btn">✕</div>
+          </div>
+        </div>
+
+        <div class="popup-body">
+
+          <div class="key-message">
+            <div class="key-message-icon">🎯</div>
+            <div class="key-message-text">
+              <strong>Afiliații tăi vor primi mai mulți bani de la 1 iulie</strong> — investim diferența direct în conversiile tale.
+            </div>
+          </div>
+
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th style="width:40%">Ce se schimbă</th>
+                <th>Înainte</th>
+                <th>De la 1 iulie 2026</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-label">Categorie</td>
+                <td><span class="cat-old">Electronics</span></td>
+                <td><span class="cat-new">Electronics · Consumer</span></td>
+              </tr>
+              <tr>
+                <td class="row-label">Comision rețea</td>
+                <td><span class="comm-old">1.5%</span></td>
+                <td>
+                  <span style="color:#fca5a5;font-weight:700;font-size:14px;">1.5%</span>
+                  <span style="color:#9ca3af;font-size:10px;margin-left:6px;">(neschimbat în Q3)</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Bonus afiliați — Q3 2026</td>
+                <td><span style="color:#6b7280;font-size:11px;">—</span></td>
+                <td>
+                  <span class="aff-q3">+0.5% per vânzare</span>
+                  <span class="aff-label">Adăugăm noi din comisionul de rețea</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Comision rețea — Q4 2026</td>
+                <td><span class="comm-old">1.5%</span></td>
+                <td>
+                  <span style="color:#fca5a5;font-weight:700;font-size:14px;">1.25%</span>
+                  <span class="comm-change-down">↓ -0.25%</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="row-label">Abonament lunar</td>
+                <td><span class="plan-old">variabil</span></td>
+                <td><span class="plan-val">99 EUR / lună</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <a class="loyalty-link" href="#">
+            <div class="loyalty-link-left">
+              <div class="loyalty-link-icon">🏆</div>
+              <div class="loyalty-link-text">
+                <strong>Discount-uri loialitate &amp; performanță</strong><br>
+                Ești în runda 12 · 36 luni vechime · vezi condițiile tale complete
+              </div>
+            </div>
+            <div class="loyalty-link-arrow">→</div>
+          </a>
+
+        </div>
+
+        <div class="popup-footer">
+          <div class="footer-meta">
+            <strong>Am înțeles și accept noile condiții.</strong><br>
+            Aplicare automată din 1 iulie. Dacă nu ești de acord, contactează echipa.
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-later">Amintește-mi mai târziu</button>
+            <button class="btn-acknowledge">Am înțeles ✓</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+  SECTION 3: PLAN DE COMUNICARE
+══════════════════════════════════════════════ -->
+<div style="width:100%;max-width:900px;">
+  <p class="section-label">📋 Plan de comunicare — 26 mai 2026</p>
+
+  <div style="background:#16192a;border:1.5px solid #3730a3;border-radius:18px;padding:32px;color:#d1d5db;font-size:13px;line-height:1.7;">
+
+    <h2 style="color:#fff;font-size:18px;font-weight:800;margin-bottom:24px;">Plan NC Rollout — Decizii din meeting 21 mai</h2>
+
+    <!-- Timeline -->
+    <div style="display:flex;flex-direction:column;gap:0;">
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;padding-bottom:28px;position:relative;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#818cf8;">24</div>
+          <div style="width:2px;flex:1;background:#1f2340;margin-top:8px;"></div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#818cf8;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">24 Mai · BI + Pregătire date</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Export date per magazin (BI)</div>
+          <div style="color:#9ca3af;font-size:12px;">Câmpuri: categorie veche → nouă, comision vechi → nou, bonus Q3, bonus Q4, rezultate sezon (1 dec 2025 – 20 mai 2026), loialitate tier.</div>
+        </div>
+      </div>
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;padding-bottom:28px;position:relative;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#818cf8;">25</div>
+          <div style="width:2px;flex:1;background:#1f2340;margin-top:8px;"></div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#818cf8;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">25 Mai · Review final</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Dorin + Ana + Mihaela — review documente și mailuri</div>
+          <div style="color:#9ca3af;font-size:12px;">Scrisoarea lui Dorin (max 2 pagini, semnătură electronică), modelul de pricing per magazin, segmentele de comunicare.</div>
+        </div>
+      </div>
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;padding-bottom:28px;position:relative;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #10b981;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#34d399;">26</div>
+          <div style="width:2px;flex:1;background:#1f2340;margin-top:8px;"></div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#34d399;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">26 Mai dimineață · LANSARE</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Trimitere comunicare</div>
+          <div style="color:#9ca3af;font-size:12px;">
+            5 segmente de comunicare:<br>
+            <span style="color:#d1d5db;">① General (toată lumea – afiliați, media)</span><br>
+            <span style="color:#d1d5db;">② UCC care NU scad (mail personalizat Dorin)</span><br>
+            <span style="color:#d1d5db;">③ UCC care SCAD (mail 1:1, tratament special)</span><br>
+            <span style="color:#d1d5db;">④ Non-UCC care cresc (automatizat)</span><br>
+            <span style="color:#d1d5db;">⑤ Non-UCC care scad (automatizat)</span><br>
+            + Comunicat de presă + anunț Cezar Stroe (CEO nou) + rezultate T1
+          </div>
+        </div>
+      </div>
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;padding-bottom:28px;position:relative;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#818cf8;">1</div>
+          <div style="width:2px;flex:1;background:#1f2340;margin-top:8px;"></div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#818cf8;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">1 Iunie · Pop-up în platformă</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Prima afișare pop-up (poate fi închis)</div>
+          <div style="color:#9ca3af;font-size:12px;">Toate magazinele active văd pop-up-ul. Pot apăsa X sau "Amintește-mi mai târziu".</div>
+        </div>
+      </div>
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;padding-bottom:28px;position:relative;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#818cf8;">7</div>
+          <div style="width:2px;flex:1;background:#1f2340;margin-top:8px;"></div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#818cf8;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">7 Iunie · A doua afișare</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Re-afișare pentru cei care n-au bifat (poate fi închis)</div>
+        </div>
+      </div>
+
+      <!-- Item -->
+      <div style="display:flex;gap:20px;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:#1e2044;border:2px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fbbf24;">14</div>
+        </div>
+        <div style="padding-top:6px;">
+          <div style="color:#f59e0b;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">14 Iunie · Ultima șansă</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:4px;">Nu mai poate fi închis — doar "Am înțeles"</div>
+          <div style="color:#9ca3af;font-size:12px;">Obligatoriu să bifeze. Cei care nu bifează riscă suspendarea programului de afiliere de la 1 iulie.</div>
+        </div>
+      </div>
+
+    </div><!-- timeline -->
+
+    <!-- Structural decisions box -->
+    <div style="margin-top:32px;background:#1a1d30;border:1px solid #2e3260;border-radius:12px;padding:20px;">
+      <div style="font-size:11px;font-weight:700;color:#818cf8;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">📌 Decizii structurale Dorin</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">Un singur tabel în pop-up</strong> — nu tabele separate cu header-uri individuale. Max 5-6 rânduri, intră într-un first screen.</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">Loialitate și performanță</strong> — nu le afișăm în pop-up, doar link „click aici să vezi".</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">Abonament: uniformizăm la 99 EUR/lună</strong> — nu „mărire de la 69 la 99".</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">Mesaj cheie</strong> — „afiliații tăi vor primi mai mulți bani de la 1 iulie și îți vor face mai multe vânzări".</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">48 categorii</strong> aliniate cu taxonomia Google → afișăm pe site pagina de pricing cu lista completă.</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#34d399;flex-shrink:0;margin-top:2px;">✓</span><span><strong style="color:#d1d5db;">Scrisoarea Dorin</strong> (1.5-2 pagini, semnătură electronică) + modelul de pricing — atașate la mail, NU în corpul mail-ului.</span></li>
+        <li style="display:flex;gap:10px;align-items:flex-start;"><span style="color:#f59e0b;flex-shrink:0;margin-top:2px;">⚡</span><span><strong style="color:#d1d5db;">Mesaj în platformă = mesaj din mail</strong> (Ana: consistență critică).</span></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
