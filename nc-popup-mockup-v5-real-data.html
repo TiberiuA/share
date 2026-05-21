@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NC Pop-up Mock-up v5 — BusinessLeague Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── BL Design System tokens ── */
+:root {
+  --bg-primary:       #0a0b1a;
+  --bg-secondary:     #0d0f21;
+  --bg-edge:          #070810;
+  --card-surface:     #171b35;
+  --deep-surface:     #11152c;
+  --accent-purple:    #7c5cfc;
+  --accent-purple-dk: #5f3dc4;
+  --accent-purple-lt: #a78bfa;
+  --accent-green:     #00d68f;
+  --accent-green-lt:  #6ee7b7;
+  --amber:            #fbbf24;
+  --red-down:         #f87171;
+  --text-primary:     #ffffff;
+  --text-secondary:   #9ca3af;
+  --text-muted:       #6b7280;
+  --glass-bg:         rgba(255,255,255,0.04);
+  --glass-border:     rgba(255,255,255,0.08);
+  --font:             'Onest', system-ui, -apple-system, sans-serif;
+  --radius:           16px;
+  --transition:       300ms cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font);
+  background: radial-gradient(ellipse at 50% 0%, #12143a 0%, var(--bg-primary) 60%, var(--bg-edge) 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 48px 24px;
+  line-height: 1.6;
+}
+
+/* ── Page layout ── */
+.page-title {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.page-title h1 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.page-title p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.popup-wrap {
+  max-width: 640px;
+  margin: 0 auto 64px;
+}
+
+.scenario-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+/* ── Modal / Popup ── */
+.popup {
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 72px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+}
+.popup.accent-red    { border-top: 3px solid var(--red-down); }
+.popup.accent-green  { border-top: 3px solid var(--accent-green); }
+.popup.accent-purple { border-top: 3px solid var(--accent-purple); }
+
+/* ── Header ── */
+.popup-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-purple-lt);
+  margin-bottom: 10px;
+}
+.header-eyebrow svg {
+  width: 12px; height: 12px;
+  stroke: currentColor; stroke-width: 2; fill: none;
+}
+.header-text h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.header-text p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.header-text p strong { color: var(--text-primary); font-weight: 700; }
+
+/* ── Body ── */
+.popup-body {
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Key message */
+.key-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(124,92,252,0.08);
+  border: 1px solid rgba(124,92,252,0.2);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.key-message-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.key-message-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.key-message-text strong { color: var(--accent-purple-lt); font-weight: 700; }
+.key-message.green {
+  background: rgba(0,214,143,0.07);
+  border-color: rgba(0,214,143,0.2);
+}
+.key-message.green .key-message-text strong { color: var(--accent-green-lt); }
+
+/* Conditions table */
+.cond-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.cond-table thead tr {
+  background: rgba(255,255,255,0.03);
+}
+.cond-table th {
+  padding: 9px 12px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+.cond-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: middle;
+}
+.cond-table tbody tr:last-child td { border-bottom: none; }
+.cond-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+.td-label {
+  font-weight: 600;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+.td-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.td-old {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,0.2);
+}
+.td-new {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+.td-new.cat {
+  color: var(--accent-purple-lt);
+  font-size: 0.82rem;
+}
+/* Discount pp value */
+.td-disc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124,92,252,0.1);
+  border: 1px solid rgba(124,92,252,0.2);
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-purple-lt);
+}
+.td-disc.zero {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+  color: var(--text-muted);
+}
+/* Dash for old side of discounts */
+.td-dash { color: rgba(255,255,255,0.15); font-size: 0.9rem; }
+
+/* YOUR COMMISSION RATE row */
+.result-row td {
+  background: rgba(124,92,252,0.06);
+  border-top: 1px solid rgba(124,92,252,0.18) !important;
+  border-bottom: none !important;
+  padding: 12px 12px;
+}
+.result-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-purple-lt);
+}
+.result-val {
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  display: block;
+}
+.result-val.down  { color: var(--red-down); }
+.result-val.up    { color: var(--accent-green); }
+.result-val.same  { color: var(--accent-purple-lt); }
+
+.change-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.change-pill.down  { background: rgba(248,113,113,0.12); color: var(--red-down); }
+.change-pill.up    { background: rgba(0,214,143,0.12);   color: var(--accent-green-lt); }
+.change-pill.same  { background: rgba(124,92,252,0.12);  color: var(--accent-purple-lt); }
+
+.verify-note {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+/* ── Affiliate bonus card ── */
+.bonus-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.bonus-card-header {
+  padding: 10px 16px;
+  background: rgba(124,92,252,0.08);
+  border-bottom: 1px solid rgba(124,92,252,0.15);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-purple-lt);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bonus-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.bonus-row:last-child { border-bottom: none; }
+.bonus-period {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.bonus-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.bonus-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--accent-green);
+}
+.bonus-val.muted { color: var(--text-secondary); }
+
+/* ── Subscription card ── */
+.sub-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(124,92,252,0.06);
+  border: 1px solid rgba(124,92,252,0.15);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.sub-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.sub-text h4 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 5px;
+  color: var(--text-primary);
+}
+.sub-text p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.sub-text p strong { color: var(--text-primary); font-weight: 700; }
+.sub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124,92,252,0.12);
+  border: 1px solid rgba(124,92,252,0.25);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-purple-lt);
+}
+
+/* ── Footer ── */
+.popup-footer {
+  padding: 20px 28px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+/* BL ghost button */
+.btn-later {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.88rem;
+  border: 1px solid var(--glass-border);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: -0.01em;
+}
+.btn-later:hover {
+  color: var(--text-primary);
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+}
+
+/* BL primary purple button */
+.btn-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-purple);
+  color: #fff;
+  padding: 0.75rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border: none;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 20px rgba(124,92,252,0.3);
+}
+.btn-confirm:hover {
+  background: var(--accent-purple-dk);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(124,92,252,0.4);
+}
+
+/* ─── divider between popups ─── */
+hr.scene-divider {
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  margin: 0 0 64px;
+  max-width: 640px;
+  margin-left: auto; margin-right: auto;
+}
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>NC Pop-up — Mock-up v5</h1>
+  <p>BusinessLeague Design System · Real data · 4 scenarios</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     1. bookzone.ro  |  rate decreases  |  ID: 75794
+════════════════════════════════════════════ -->
+<div class="popup-wrap">
+  <div class="scenario-label">⬇ bookzone.ro — Books › Bookshops · rate decreases · ID 75794</div>
+  <div class="popup accent-red">
+
+    <div class="popup-header">
+      <div class="header-text">
+        <div class="header-eyebrow">
+          <svg viewBox="0 0 16 16"><path d="M8 1v14M1 8h14" stroke-linecap="round"/></svg>
+          Network commission update
+        </div>
+        <h2>Your new conditions starting July 1, 2026</h2>
+        <p>The following changes apply to <strong>bookzone.ro</strong>. Please review the details below.</p>
+      </div>
+    </div>
+
+    <div class="popup-body">
+
+      <div class="key-message">
+        <div class="key-message-icon">🚀</div>
+        <div class="key-message-text">
+          <strong>Your affiliates will earn more per sale starting July 1</strong> — we're investing the difference directly into your conversions.
+        </div>
+      </div>
+
+      <table class="cond-table">
+        <thead>
+          <tr>
+            <th style="width:44%">Condition</th>
+            <th>Until July 1st</th>
+            <th>From July 1st</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Category</td>
+            <td><span class="td-old">Books</span></td>
+            <td><span class="td-new cat">Books › Bookshops</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">Standard network commission</td>
+            <td><span class="td-old">4.50%</span></td>
+            <td><span class="td-new">4.00%</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">🏅 Loyalty discount<div class="td-sub">5–10 years (25% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−1.00 pp</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">⚡ Performance discount<div class="td-sub">Unicorns segment (25% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−1.00 pp</span></td>
+          </tr>
+          <tr class="result-row">
+            <td><div class="result-label">Your commission rate</div></td>
+            <td><span class="td-old" style="font-size:0.95rem">3.87%</span></td>
+            <td>
+              <span class="result-val down">2.00%</span>
+              <span class="change-pill down">▼ −1.87 pp</span>
+              <div class="verify-note">4.00 × 50% = 2.00%</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="bonus-card">
+        <div class="bonus-card-header">
+          🎯 Affiliate Bonus — based on your commission rate change (−1.87 pp)
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q3 2026 — Jul › Sep</div>
+            <div class="bonus-desc">100% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val">+1.87% per sale</div>
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q4 2026 — Oct › Dec</div>
+            <div class="bonus-desc">50% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val muted">+0.94% per sale</div>
+        </div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sub-icon">💎</div>
+        <div class="sub-text">
+          <h4>One Plan Only: PLUS at 99 EUR/month</h4>
+          <p>Starting <strong>July 1st, 2026</strong>, all merchants move to a single subscription. Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.</p>
+          <span class="sub-badge">Plus — 99 EUR / month</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="popup-footer">
+      <button class="btn-later">Remind me later</button>
+      <button class="btn-confirm">I confirm ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     2. fashiondays.ro  |  rate increases
+════════════════════════════════════════════ -->
+<div class="popup-wrap">
+  <div class="scenario-label">⬆ fashiondays.ro — Fashion › Clothing &amp; General · rate increases</div>
+  <div class="popup accent-green">
+
+    <div class="popup-header">
+      <div class="header-text">
+        <div class="header-eyebrow">
+          <svg viewBox="0 0 16 16"><path d="M8 1v14M1 8h14" stroke-linecap="round"/></svg>
+          Network commission update
+        </div>
+        <h2>Your new conditions starting July 1, 2026</h2>
+        <p>The following changes apply to <strong>fashiondays.ro</strong>. Please review the details below.</p>
+      </div>
+    </div>
+
+    <div class="popup-body">
+
+      <div class="key-message green">
+        <div class="key-message-icon">🚀</div>
+        <div class="key-message-text">
+          <strong>Your affiliates will earn more per sale starting July 1</strong> — and will drive more conversions for you.
+        </div>
+      </div>
+
+      <table class="cond-table">
+        <thead>
+          <tr>
+            <th style="width:44%">Condition</th>
+            <th>Until July 1st</th>
+            <th>From July 1st</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Category</td>
+            <td><span class="td-old">Fashion</span></td>
+            <td><span class="td-new cat">Fashion › Clothing &amp; General</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">Standard network commission</td>
+            <td><span class="td-old">6.00%</span></td>
+            <td><span class="td-new">5.00%</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">🏅 Loyalty discount<div class="td-sub">5–10 years (25% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−1.25 pp</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">⚡ Performance discount<div class="td-sub">Corporations segment (15% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−0.75 pp</span></td>
+          </tr>
+          <tr class="result-row">
+            <td><div class="result-label">Your commission rate</div></td>
+            <td><span class="td-old" style="font-size:0.95rem">0.50%</span></td>
+            <td>
+              <span class="result-val up">3.00%</span>
+              <span class="change-pill up">▲ +2.50 pp</span>
+              <div class="verify-note">5.00 × 60% = 3.00%</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="bonus-card">
+        <div class="bonus-card-header">
+          🎯 Affiliate Bonus — based on your commission rate change (+2.50 pp)
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q3 2026 — Jul › Sep</div>
+            <div class="bonus-desc">100% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val">+2.50% per sale</div>
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q4 2026 — Oct › Dec</div>
+            <div class="bonus-desc">50% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val muted">+1.25% per sale</div>
+        </div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sub-icon">💎</div>
+        <div class="sub-text">
+          <h4>One Plan Only: PLUS at 99 EUR/month</h4>
+          <p>Starting <strong>July 1st, 2026</strong>, all merchants move to a single subscription. Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.</p>
+          <span class="sub-badge">Plus — 99 EUR / month</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="popup-footer">
+      <button class="btn-later">Remind me later</button>
+      <button class="btn-confirm">I confirm ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     3. drmax.ro  |  rate increases
+════════════════════════════════════════════ -->
+<div class="popup-wrap">
+  <div class="scenario-label">⬆ drmax.ro — Pharma · rate increases</div>
+  <div class="popup accent-green">
+
+    <div class="popup-header">
+      <div class="header-text">
+        <div class="header-eyebrow">
+          <svg viewBox="0 0 16 16"><path d="M8 1v14M1 8h14" stroke-linecap="round"/></svg>
+          Network commission update
+        </div>
+        <h2>Your new conditions starting July 1, 2026</h2>
+        <p>The following changes apply to <strong>drmax.ro</strong>. Please review the details below.</p>
+      </div>
+    </div>
+
+    <div class="popup-body">
+
+      <div class="key-message green">
+        <div class="key-message-icon">🚀</div>
+        <div class="key-message-text">
+          <strong>Your affiliates will earn more per sale starting July 1</strong> — and will drive more conversions for you.
+        </div>
+      </div>
+
+      <table class="cond-table">
+        <thead>
+          <tr>
+            <th style="width:44%">Condition</th>
+            <th>Until July 1st</th>
+            <th>From July 1st</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Category</td>
+            <td><span class="td-old">Pharma</span></td>
+            <td><span class="td-new cat">Pharma</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">Standard network commission</td>
+            <td><span class="td-old">5.00%</span></td>
+            <td><span class="td-new">4.00%</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">🏅 Loyalty discount<div class="td-sub">5–10 years (25% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−1.00 pp</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">⚡ Performance discount<div class="td-sub">Unicorns segment (25% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−1.00 pp</span></td>
+          </tr>
+          <tr class="result-row">
+            <td><div class="result-label">Your commission rate</div></td>
+            <td><span class="td-old" style="font-size:0.95rem">0.75%</span></td>
+            <td>
+              <span class="result-val up">2.00%</span>
+              <span class="change-pill up">▲ +1.25 pp</span>
+              <div class="verify-note">4.00 × 50% = 2.00%</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="bonus-card">
+        <div class="bonus-card-header">
+          🎯 Affiliate Bonus — based on your commission rate change (+1.25 pp)
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q3 2026 — Jul › Sep</div>
+            <div class="bonus-desc">100% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val">+1.25% per sale</div>
+        </div>
+        <div class="bonus-row">
+          <div>
+            <div class="bonus-period">Q4 2026 — Oct › Dec</div>
+            <div class="bonus-desc">50% of your rate delta → your affiliates</div>
+          </div>
+          <div class="bonus-val muted">+0.63% per sale</div>
+        </div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sub-icon">💎</div>
+        <div class="sub-text">
+          <h4>One Plan Only: PLUS at 99 EUR/month</h4>
+          <p>Starting <strong>July 1st, 2026</strong>, all merchants move to a single subscription. Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.</p>
+          <span class="sub-badge">Plus — 99 EUR / month</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="popup-footer">
+      <button class="btn-later">Remind me later</button>
+      <button class="btn-confirm">I confirm ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     4. autobox.ro  |  rate unchanged
+════════════════════════════════════════════ -->
+<div class="popup-wrap">
+  <div class="scenario-label">→ autobox.ro — Automotive › Parts &amp; Accessories · rate unchanged</div>
+  <div class="popup accent-purple">
+
+    <div class="popup-header">
+      <div class="header-text">
+        <div class="header-eyebrow">
+          <svg viewBox="0 0 16 16"><path d="M8 1v14M1 8h14" stroke-linecap="round"/></svg>
+          Network commission update
+        </div>
+        <h2>Your new conditions starting July 1, 2026</h2>
+        <p>The following changes apply to <strong>autobox.ro</strong>. Please review the details below.</p>
+      </div>
+    </div>
+
+    <div class="popup-body">
+
+      <div class="key-message">
+        <div class="key-message-icon">✅</div>
+        <div class="key-message-text">
+          Your commission rate <strong>stays the same</strong>. Your category and standard rate are updated — your effective rate is unchanged.
+        </div>
+      </div>
+
+      <table class="cond-table">
+        <thead>
+          <tr>
+            <th style="width:44%">Condition</th>
+            <th>Until July 1st</th>
+            <th>From July 1st</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Category</td>
+            <td><span class="td-old">Automotive</span></td>
+            <td><span class="td-new cat">Automotive › Parts &amp; Accessories</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">Standard network commission</td>
+            <td><span class="td-old">4.50%</span></td>
+            <td><span class="td-new">5.00%</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">🏅 Loyalty discount<div class="td-sub">1 year (10% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc">−0.50 pp</span></td>
+          </tr>
+          <tr>
+            <td class="td-label">⚡ Performance discount<div class="td-sub">Not yet eligible (0% discount)</div></td>
+            <td><span class="td-dash">—</span></td>
+            <td><span class="td-disc zero">−0.00 pp</span></td>
+          </tr>
+          <tr class="result-row">
+            <td><div class="result-label">Your commission rate</div></td>
+            <td><span class="td-old" style="font-size:0.95rem">4.50%</span></td>
+            <td>
+              <span class="result-val same">4.50%</span>
+              <span class="change-pill same">= unchanged</span>
+              <div class="verify-note">5.00 × 90% = 4.50%</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sub-card">
+        <div class="sub-icon">💎</div>
+        <div class="sub-text">
+          <h4>One Plan Only: PLUS at 99 EUR/month</h4>
+          <p>Starting <strong>July 1st, 2026</strong>, all merchants move to a single subscription. Your new plan will include <strong>at least the benefits of Plus plan at 99 EUR</strong> — nothing will be downgraded.</p>
+          <span class="sub-badge">Plus — 99 EUR / month</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="popup-footer">
+      <button class="btn-later">Remind me later</button>
+      <button class="btn-confirm">I confirm ✓</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
