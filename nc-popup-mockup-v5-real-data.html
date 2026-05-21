@@ -443,9 +443,158 @@ hr.scene-divider {
   max-width: 640px;
   margin-left: auto; margin-right: auto;
 }
+
+/* ─────────────────────────────────────────
+   LIGHT MODE overrides
+───────────────────────────────────────── */
+body.light {
+  background: linear-gradient(180deg, #f0f0ff 0%, #f7f7ff 50%, #efefff 100%);
+  color: #111827;
+}
+body.light .page-title h1,
+body.light .page-title p,
+body.light .scenario-label { color: #6b7280; }
+
+body.light .popup {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  backdrop-filter: none;
+}
+body.light .popup-header { border-bottom-color: #e5e7eb; }
+body.light .popup-footer {
+  border-top-color: #e5e7eb;
+  background: #fafafa;
+}
+
+body.light .header-eyebrow {
+  background: rgba(124,92,252,0.07);
+  border-color: rgba(124,92,252,0.15);
+  color: var(--accent-purple);
+}
+body.light .header-text h2 { color: #111827; }
+body.light .header-text p  { color: #4b5563; }
+body.light .header-text p strong { color: #111827; }
+
+body.light .key-message {
+  background: rgba(124,92,252,0.06);
+  border-color: rgba(124,92,252,0.15);
+}
+body.light .key-message-text { color: #4b5563; }
+body.light .key-message-text strong { color: var(--accent-purple); }
+body.light .key-message.green { background: rgba(0,214,143,0.07); border-color: rgba(0,214,143,0.2); }
+body.light .key-message.green .key-message-text strong { color: #059669; }
+
+body.light .cond-table thead tr { background: #f9fafb; }
+body.light .cond-table th {
+  color: #6b7280;
+  border-bottom-color: #e5e7eb;
+}
+body.light .cond-table td { border-bottom-color: #f0f0f0; }
+body.light .cond-table tbody tr:hover { background: #fafafa; }
+body.light .td-label { color: #374151; }
+body.light .td-sub   { color: #9ca3af; }
+body.light .td-old   { color: #9ca3af; text-decoration-color: rgba(0,0,0,0.15); }
+body.light .td-new   { color: #111827; }
+body.light .td-new.cat { color: var(--accent-purple); }
+body.light .td-dash  { color: #d1d5db; }
+body.light .td-disc  {
+  background: rgba(124,92,252,0.08);
+  border-color: rgba(124,92,252,0.2);
+  color: var(--accent-purple);
+}
+body.light .td-disc.zero {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+}
+
+body.light .result-row td {
+  background: rgba(124,92,252,0.05);
+  border-top-color: rgba(124,92,252,0.15) !important;
+}
+body.light .result-label { color: var(--accent-purple); }
+body.light .result-val.up   { color: #111827; }
+body.light .result-val.down { color: #059669; }
+body.light .result-val.same { color: var(--accent-purple); }
+body.light .change-pill.up   { background: rgba(0,0,0,0.05);       color: #374151; }
+body.light .change-pill.down { background: rgba(5,150,105,0.1);    color: #059669; }
+body.light .change-pill.same { background: rgba(124,92,252,0.1);   color: var(--accent-purple); }
+body.light .verify-note { color: #9ca3af; }
+
+body.light .bonus-card {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+body.light .bonus-card-header {
+  background: rgba(124,92,252,0.06);
+  border-bottom-color: rgba(124,92,252,0.12);
+  color: var(--accent-purple);
+}
+body.light .bonus-row { border-bottom-color: #f0f0f0; }
+body.light .bonus-period { color: #111827; }
+body.light .bonus-desc   { color: #9ca3af; }
+body.light .bonus-val    { color: #059669; }
+body.light .bonus-val.muted { color: #6b7280; }
+
+body.light .sub-card {
+  background: rgba(124,92,252,0.05);
+  border-color: rgba(124,92,252,0.15);
+}
+body.light .sub-text h4 { color: #111827; }
+body.light .sub-text p  { color: #4b5563; }
+body.light .sub-text p strong { color: #111827; }
+body.light .sub-badge {
+  background: rgba(124,92,252,0.08);
+  border-color: rgba(124,92,252,0.2);
+  color: var(--accent-purple);
+}
+
+body.light .btn-later {
+  color: #4b5563;
+  border-color: #d1d5db;
+  background: #ffffff;
+}
+body.light .btn-later:hover {
+  color: #111827;
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+/* ─── Mode toggle button ─── */
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  backdrop-filter: blur(12px);
+}
+.mode-toggle:hover { border-color: rgba(124,92,252,0.4); color: var(--accent-purple-lt); }
+body.light .mode-toggle {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  color: #4b5563;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+body.light .mode-toggle:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
 </style>
 </head>
 <body>
+
+<button class="mode-toggle" onclick="document.body.classList.toggle('light');this.textContent=document.body.classList.contains('light')?'🌙 Dark mode':'☀️ Light mode'" id="toggle-btn">☀️ Light mode</button>
 
 <div class="page-title">
   <h1>NC Pop-up — Mock-up v5</h1>
