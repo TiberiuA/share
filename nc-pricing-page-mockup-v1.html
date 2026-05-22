@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Plan — Business League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary:       #0a0b1a;
+  --bg-edge:          #070810;
+  --card-surface:     #171b35;
+  --accent-purple:    #7c5cfc;
+  --accent-purple-dk: #5f3dc4;
+  --accent-purple-lt: #a78bfa;
+  --accent-green:     #00d68f;
+  --accent-green-lt:  #6ee7b7;
+  --teal:             #3dd9c4;
+  --amber:            #f59e0b;
+  --amber-lt:         #fcd34d;
+  --text-primary:     #ffffff;
+  --text-secondary:   #9ca3af;
+  --text-muted:       #6b7280;
+  --glass-bg:         rgba(255,255,255,0.04);
+  --glass-border:     rgba(255,255,255,0.08);
+  --radius:           16px;
+  --transition:       300ms cubic-bezier(0.4,0,0.2,1);
+  --font:             'Onest', system-ui, sans-serif;
+  --sidebar-bg:       #13152b;
+  --sidebar-border:   rgba(255,255,255,0.06);
+}
+body.light {
+  --bg-primary:    #f5f6fa;
+  --card-surface:  #ffffff;
+  --glass-bg:      rgba(0,0,0,0.03);
+  --glass-border:  rgba(0,0,0,0.08);
+  --text-primary:  #12152e;
+  --text-secondary:#4b5075;
+  --text-muted:    #8b8fa8;
+}
+* { margin:0; padding:0; box-sizing:border-box }
+body { font-family:var(--font); background:radial-gradient(ellipse at 50% 0%,#12143a 0%,var(--bg-primary) 60%,var(--bg-edge) 100%); color:var(--text-primary); display:flex; min-height:100vh; transition:background var(--transition),color var(--transition) }
+body.light { background:#f5f6fa }
+
+/* SIDEBAR */
+.sidebar { width:172px; height:100vh; position:sticky; top:0; background:var(--sidebar-bg); border-right:1px solid var(--sidebar-border); flex-shrink:0; display:flex; flex-direction:column; padding:18px 0; z-index:200; overflow-y:auto; transition:transform var(--transition) }
+.sidebar-logo { padding:4px 16px 22px; border-bottom:1px solid var(--sidebar-border); margin-bottom:8px }
+.logo-wordmark { font-size:0.78rem; font-weight:900; color:#fff; line-height:1.15 }
+.logo-wordmark em { display:block; font-style:normal; font-size:0.44rem; font-weight:500; letter-spacing:0.1em; color:#8b8fa8; text-transform:uppercase }
+.logo-league { background:linear-gradient(102deg,#b987ff 0%,#efe3ff 28%,#fff 46%,#f2e8ff 62%,#b693ff 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+.s-item { display:flex; align-items:center; gap:7px; padding:7px 14px; color:#8b8fa8; font-size:0.73rem; cursor:pointer; transition:all 0.15s; border-left:2px solid transparent }
+.s-item:hover { color:#c5c8db; background:rgba(255,255,255,0.03) }
+.s-item.active { color:#fff; background:rgba(255,255,255,0.05) }
+.s-item.sub { padding-left:26px; font-size:0.7rem }
+.s-item.sub.active-sub { color:#fff; background:rgba(124,92,252,0.1); border-left-color:var(--accent-purple) }
+.s-badge { background:#e53e5c; color:#fff; font-size:0.44rem; padding:2px 5px; border-radius:4px; font-weight:800 }
+
+/* MAIN WRAP */
+.main-wrap { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden }
+
+/* TOPBAR */
+.topbar { height:50px; display:flex; align-items:center; padding:0 20px; gap:12px; border-bottom:1px solid var(--glass-border); background:var(--sidebar-bg); flex-shrink:0; transition:background var(--transition) }
+body.light .topbar { background:#fff; border-bottom-color:#e5e7f0 }
+.season-pill { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:999px; padding:5px 12px; font-size:0.62rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px }
+.season-pill strong { color:var(--text-primary); font-weight:700 }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:10px }
+.topbar-ico { color:var(--text-muted); font-size:0.95rem; cursor:pointer }
+.level-pill { background:rgba(124,92,252,0.12); border:1px solid rgba(124,92,252,0.2); border-radius:999px; padding:4px 12px; font-size:0.63rem; color:var(--accent-purple-lt); font-weight:700 }
+.avatar { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--accent-purple),var(--accent-purple-dk)); display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:800; color:#fff; flex-shrink:0 }
+.mode-toggle { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:999px; padding:4px 10px; font-size:0.6rem; font-weight:600; color:var(--text-secondary); cursor:pointer; transition:all var(--transition); white-space:nowrap }
+.hamburger { display:none; background:none; border:none; cursor:pointer; padding:6px; color:var(--text-secondary); flex-direction:column; gap:4px; flex-shrink:0 }
+.hamburger span { display:block; width:20px; height:2px; background:currentColor; border-radius:2px }
+.sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:150; backdrop-filter:blur(4px) }
+.sidebar-overlay.open { display:block }
+
+/* CONTENT */
+.content { flex:1; padding:24px 28px 60px; overflow-y:auto }
+body.light .content { background:#f5f6fa }
+.breadcrumb { display:flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--text-muted); margin-bottom:22px; flex-wrap:wrap }
+.breadcrumb h1 { font-size:1.3rem; font-weight:800; color:var(--text-primary); letter-spacing:-0.02em }
+.section-label { display:flex; align-items:center; gap:6px; font-size:0.6rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-purple-lt); margin:0 0 14px }
+
+/* DEMO STATE SWITCHER */
+.state-switcher { display:flex; align-items:center; gap:8px; margin-bottom:24px; flex-wrap:wrap }
+.state-switcher-label { font-size:0.6rem; font-weight:700; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; margin-right:4px }
+.state-btn { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; padding:5px 12px; font-size:0.65rem; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:var(--font); transition:all var(--transition) }
+.state-btn.active { background:rgba(124,92,252,0.15); border-color:var(--accent-purple); color:var(--accent-purple-lt) }
+.state-btn.active-cat { background:rgba(61,217,196,0.12); border-color:var(--teal); color:var(--teal) }
+.state-btn.active-override { background:rgba(245,158,11,0.12); border-color:var(--amber); color:var(--amber-lt) }
+
+/* PAGE GRID */
+.page-grid { display:grid; grid-template-columns:310px 1fr; gap:22px; align-items:start }
+
+/* ── COMMISSION CARD ── */
+.commission-card { background:var(--card-surface); border:1px solid var(--glass-border); border-radius:var(--radius); padding:22px 24px; margin-bottom:20px; position:relative; overflow:hidden; transition:border-color 0.3s }
+body.light .commission-card { background:#fff; border-color:#e5e7f0; box-shadow:0 1px 6px rgba(0,0,0,0.05) }
+.commission-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent-green),var(--teal)); transition:background 0.3s }
+
+/* Override state */
+.commission-card.override-state { border-color:rgba(245,158,11,0.3) }
+.commission-card.override-state::before { background:linear-gradient(90deg,var(--amber),#f97316) }
+
+/* Special NC badge */
+.special-nc-badge { display:none; align-items:center; gap:6px; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:6px 12px; margin-bottom:14px; font-size:0.65rem; font-weight:700; color:var(--amber-lt) }
+.special-nc-badge .snc-icon { font-size:0.85rem }
+body.light .special-nc-badge { background:rgba(245,158,11,0.08); color:#92400e }
+
+/* Category change banner */
+.cat-change-banner { display:none; align-items:center; gap:6px; background:rgba(61,217,196,0.08); border:1px solid rgba(61,217,196,0.2); border-radius:10px; padding:6px 12px; margin-bottom:14px; font-size:0.62rem; font-weight:600; color:var(--teal) }
+body.light .cat-change-banner { background:rgba(61,217,196,0.06) }
+
+.commission-top { display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap }
+.commission-main .lbl { font-size:0.58rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px }
+.commission-main .value { font-size:2.4rem; font-weight:900; color:var(--accent-green); letter-spacing:-0.04em; line-height:1 }
+.commission-main .value sup { font-size:1rem; vertical-align:super; font-weight:700 }
+.commission-main .value-row { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap }
+.commission-main .value-tag { font-size:0.65rem; color:var(--text-muted); margin-top:4px }
+.commission-divider { width:1px; min-height:48px; background:var(--glass-border); align-self:center; flex-shrink:0 }
+
+/* Formula */
+.formula-wrap { flex:1; min-width:220px; transition:opacity 0.3s }
+.formula-wrap.dimmed { opacity:0.25; pointer-events:none; filter:grayscale(1) }
+.formula-title { font-size:0.55rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px }
+.formula { display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+.f-block { text-align:center }
+.f-block .f-lbl { font-size:0.52rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px }
+.f-block .f-val { font-size:0.85rem; font-weight:700; color:var(--text-primary) }
+.f-block .f-tag { font-size:0.58rem; color:var(--accent-green); font-weight:600; margin-top:1px }
+.f-op { color:var(--text-muted); font-size:0.9rem; padding:0 2px }
+.f-result { background:rgba(0,214,143,0.08); border:1px solid rgba(0,214,143,0.2); border-radius:10px; padding:5px 12px; text-align:center }
+.f-result .f-lbl { color:var(--accent-green-lt) }
+.f-result .f-val { font-size:0.95rem; font-weight:800; color:var(--accent-green) }
+
+/* Override info block (replaces formula when override active) */
+.override-info { display:none; flex:1; min-width:220px }
+.override-info-inner { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.18); border-radius:12px; padding:12px 16px }
+.oi-row { display:flex; align-items:baseline; gap:6px; margin-bottom:6px; font-size:0.68rem }
+.oi-row:last-child { margin-bottom:0 }
+.oi-label { color:var(--text-muted); font-size:0.6rem; min-width:120px }
+.oi-val { color:var(--text-primary); font-weight:600 }
+.oi-auto { color:var(--text-muted); font-size:0.65rem }
+.oi-auto span { color:var(--accent-green-lt); font-weight:700 }
+
+/* DISCOUNT GRID */
+.discount-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; transition:opacity 0.3s }
+.discount-grid.dimmed { opacity:0.22; pointer-events:none; filter:grayscale(1) }
+.d-card { background:var(--card-surface); border:1px solid var(--glass-border); border-radius:var(--radius); overflow:hidden }
+body.light .d-card { background:#fff; border-color:#e5e7f0; box-shadow:0 1px 4px rgba(0,0,0,0.04) }
+.d-card-head { padding:14px 18px 12px; border-bottom:1px solid var(--glass-border); display:flex; align-items:center; gap:10px }
+body.light .d-card-head { border-bottom-color:#f0f2f8 }
+.d-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:0.95rem; flex-shrink:0 }
+.d-icon-bl  { background:rgba(124,92,252,0.12) }
+.d-icon-loy { background:rgba(0,214,143,0.10) }
+.d-head-title { font-size:0.8rem; font-weight:700; color:var(--text-primary) }
+.d-head-sub { font-size:0.63rem; color:var(--text-muted); margin-top:1px }
+.d-row { display:flex; align-items:center; padding:9px 18px; border-bottom:1px solid var(--glass-border); transition:background 0.15s }
+body.light .d-row { border-bottom-color:#f5f6fa }
+.d-row:last-child { border-bottom:none }
+.d-row:hover { background:var(--glass-bg) }
+.d-row.current { background:rgba(124,92,252,0.10); border-left:3px solid var(--accent-purple) }
+.d-row.current .d-level-name { color:var(--accent-purple-lt); font-weight:700 }
+body.light .d-row.current .d-level-name { color:var(--accent-purple) }
+.d-level { flex:1; min-width:0 }
+.d-level-name { font-size:0.76rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px; flex-wrap:wrap }
+.d-level-cond { font-size:0.61rem; color:var(--text-muted); margin-top:2px }
+.d-disc { font-size:0.8rem; font-weight:800; color:var(--accent-green); white-space:nowrap; margin-left:10px }
+.d-disc.zero { color:var(--text-muted); font-weight:500 }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; padding:2px 7px; border-radius:7px; font-size:0.48rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase }
+.badge-active { background:rgba(124,92,252,0.15); color:var(--accent-purple-lt) }
+.badge-locked { background:var(--glass-bg); color:var(--text-muted); border:1px solid var(--glass-border) }
+
+/* PLAN CARD */
+.plan-card { background:var(--card-surface); border:1.5px solid var(--glass-border); border-radius:var(--radius); overflow:hidden }
+body.light .plan-card { background:#fff; border-color:#1a1d2e; box-shadow:0 2px 12px rgba(0,0,0,0.08) }
+.plan-header { background:#1a1d2e; padding:22px; text-align:center }
+.plan-name { font-size:0.6rem; font-weight:800; letter-spacing:0.18em; color:rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom:8px }
+.plan-price { font-size:2.8rem; font-weight:900; color:#fff; line-height:1 }
+.plan-price sup { font-size:1.1rem; vertical-align:super; margin-top:6px; font-weight:700 }
+.plan-price sub { font-size:0.75rem; color:rgba(255,255,255,0.5); font-weight:400 }
+.plan-body { padding:18px 20px }
+.plan-feature { display:flex; align-items:flex-start; gap:8px; padding:5px 0; font-size:0.76rem; color:var(--text-secondary) }
+.plan-feature .ck { color:var(--accent-green); font-weight:700; flex-shrink:0; margin-top:1px }
+.plan-feature .num { font-weight:700; color:var(--text-primary) }
+.plan-active { text-align:center; color:var(--text-muted); font-size:0.68rem; padding:4px 0 18px }
+
+/* HISTORY BTN */
+.history-btn { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; padding:5px 11px; font-size:0.6rem; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:var(--font); transition:all var(--transition); white-space:nowrap }
+.history-btn:hover { color:var(--text-primary); border-color:rgba(255,255,255,0.2) }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); z-index:1000; align-items:center; justify-content:center; padding:16px }
+.modal-overlay.open { display:flex }
+.modal-box { background:var(--card-surface); border:1px solid var(--glass-border); border-radius:20px; width:100%; max-width:780px; overflow:hidden; box-shadow:0 24px 72px rgba(0,0,0,0.5); max-height:90vh; display:flex; flex-direction:column }
+body.light .modal-box { background:#fff; border-color:#e5e7f0 }
+.modal-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--glass-border); flex-shrink:0 }
+body.light .modal-head { border-bottom-color:#e5e7f0 }
+.modal-scroll { overflow-y:auto; flex:1 }
+.modal-close { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:0.9rem; color:var(--text-muted); display:flex; align-items:center; justify-content:center; font-family:var(--font); transition:all var(--transition); flex-shrink:0 }
+.modal-close:hover { color:var(--text-primary) }
+.modal-table { width:100%; border-collapse:collapse }
+.modal-th { padding:10px 18px; text-align:left; font-size:0.55rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); background:var(--glass-bg); white-space:nowrap }
+.modal-td { padding:10px 18px; border-bottom:1px solid var(--glass-border); font-size:0.74rem; vertical-align:middle }
+body.light .modal-td { border-bottom-color:#f5f6fa }
+
+/* Trigger pill in history */
+.trig-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:0.58rem; font-weight:700; white-space:nowrap }
+.trig-round  { background:rgba(124,92,252,0.12); color:var(--accent-purple-lt) }
+.trig-cat    { background:rgba(61,217,196,0.12); color:var(--teal) }
+.trig-over   { background:rgba(245,158,11,0.12); color:var(--amber-lt) }
+.trig-exit   { background:rgba(110,231,183,0.12); color:var(--accent-green-lt) }
+body.light .trig-round { color:var(--accent-purple) }
+body.light .trig-cat   { color:#0d9488 }
+body.light .trig-over  { color:#92400e }
+body.light .trig-exit  { color:#065f46 }
+
+/* History row highlight */
+.hist-current { background:rgba(124,92,252,0.08) }
+.hist-override { background:rgba(245,158,11,0.05) }
+.hist-exit     { background:rgba(0,214,143,0.05) }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { position:fixed; top:0; left:0; height:100%; transform:translateX(-100%); box-shadow:4px 0 40px rgba(0,0,0,0.5) }
+  .sidebar.open { transform:translateX(0) }
+  .hamburger { display:flex }
+  .page-grid { grid-template-columns:1fr }
+  .discount-grid { grid-template-columns:1fr 1fr }
+  .content { padding:20px 20px 50px }
+  .season-pill span { display:none }
+}
+@media (max-width: 600px) {
+  .content { padding:16px 14px 44px }
+  .topbar { padding:0 14px; gap:8px }
+  .topbar-ico,.level-pill,.season-pill { display:none }
+  .breadcrumb h1 { font-size:1.1rem }
+  .commission-card { padding:16px 14px }
+  .commission-top { flex-direction:column; gap:14px }
+  .commission-divider { display:none }
+  .commission-main .value { font-size:2rem }
+  .formula { flex-direction:column; align-items:stretch; gap:0 }
+  .f-op { display:none }
+  .f-block { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--glass-border) }
+  .f-block:last-child { border-bottom:none }
+  .f-block .f-lbl { font-size:0.62rem; margin-bottom:0; flex:1 }
+  .f-block .f-val { font-size:0.86rem; margin:0 8px }
+  .f-result { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; margin-top:8px }
+  .f-result .f-lbl { margin-bottom:0 }
+  .f-result .f-val { font-size:1.1rem; margin-left:auto }
+  .discount-grid { grid-template-columns:1fr }
+  .d-row { padding:10px 14px; min-height:48px }
+  .modal-overlay { padding:0; align-items:flex-end }
+  .modal-box { border-radius:20px 20px 0 0; max-height:88vh; max-width:100% }
+  .modal-th,.modal-td { padding:8px 12px; font-size:0.68rem }
+  .state-switcher { gap:6px }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="soverlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-wordmark">BUSINESS <span class="logo-league">LEAGUE</span><em>™ by 2Performant</em></div>
+  </div>
+  <div class="s-item">🛠 Tools</div>
+  <div class="s-item">🏷 Promotions</div>
+  <div class="s-item sub">Influencers <span class="s-badge">NEW</span></div>
+  <div class="s-item">👥 Affiliate Manager</div>
+  <div class="s-item">🎓 Mentors</div>
+  <div class="s-item">⚙️ Settings</div>
+  <div class="s-item">🔗 Attribution codes</div>
+  <div class="s-item active">💳 Billing</div>
+  <div class="s-item sub">History</div>
+  <div class="s-item sub">Invoices</div>
+  <div class="s-item sub active-sub">Pricing plan</div>
+  <div class="s-item">✉️ Messages</div>
+  <div class="s-item">💬 Chat</div>
+</aside>
+
+<div class="main-wrap">
+  <div class="topbar">
+    <button class="hamburger" onclick="openSidebar()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="season-pill"><strong>Season 5 · Stage 2 · Round 2</strong><span>04.05–01.06.2026</span></div>
+    <div class="topbar-right">
+      <button class="mode-toggle" onclick="document.body.classList.toggle('light');this.textContent=document.body.classList.contains('light')?'🌙 Dark':'☀️ Light'">☀️ Light</button>
+      <span class="topbar-ico">✉️</span><span class="topbar-ico">🔔</span>
+      <div class="level-pill">Companies</div>
+      <div class="avatar">BZ</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb"><span>💳</span> Billing <span>/</span><h1>Pricing Plan</h1></div>
+
+    <!-- DEMO STATE SWITCHER -->
+    <div class="state-switcher">
+      <span class="state-switcher-label">Demo state:</span>
+      <button class="state-btn active" id="btn-normal" onclick="setState('normal')">⚡ Automatic</button>
+      <button class="state-btn" id="btn-override" onclick="setState('override')">🔒 Special Network Commission</button>
+    </div>
+
+    <div class="page-grid">
+
+      <!-- LEFT: Plan -->
+      <div>
+        <div class="section-label">✦ Subscription plan</div>
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Performer</div>
+            <div class="plan-price"><sup>€</sup>99<sub> /mo</sub></div>
+          </div>
+          <div class="plan-body">
+            <div class="plan-feature"><span class="ck">✓</span> Unlimited marketers</div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">20</span> invitations from Marketer Ranking</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> Merchant Ranking Display</div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">2</span> Mass messages to your marketers</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">1</span> Promotion</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">1</span> Product feed</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">10,000</span> Products in feeds</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> Realtime statistics</div>
+            <div class="plan-feature"><span class="ck">✓</span> Newsletter Insert</div>
+            <div class="plan-feature"><span class="ck">✓</span> Phone &amp; Email Support</div>
+            <div class="plan-feature"><span class="ck">✓</span> <span>€ <span class="num">100</span> Initial deposit</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">40%</span> Bonuses commission</span></div>
+            <div class="plan-feature"><span class="ck">✓</span> <span><span class="num">6%</span> Sale commission</span></div>
+          </div>
+          <div class="plan-active">Active since 21<sup>st</sup> of May 2026</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Commission + Discounts -->
+      <div>
+        <div class="section-label">✦ Your sale commission</div>
+
+        <div class="commission-card" id="commission-card">
+
+          <!-- Special NC badge (override only) -->
+          <div class="special-nc-badge" id="special-nc-badge">
+            <span class="snc-icon">🔒</span>
+            <span>Special Network Commission — manually set, decoupled from automatic system</span>
+          </div>
+
+          <!-- Category change banner -->
+          <div class="cat-change-banner" id="cat-change-banner">
+            <span>📁</span>
+            <span>Updated mid-round · Category changed: <strong>Books › Bookshops → Electronics › Peripherals</strong> · 19 May 2026</span>
+          </div>
+
+          <div class="commission-top">
+            <div class="commission-main">
+              <div class="lbl">Your sale commission rate</div>
+              <div class="value-row">
+                <div class="value" id="main-rate"><sup>%</sup><span id="rate-num">3.24</span></div>
+                <button class="history-btn" onclick="openModal()">📋 View history</button>
+              </div>
+              <div class="value-tag" id="rate-tag">Applied to all confirmed sales.</div>
+            </div>
+            <div class="commission-divider" id="comm-divider"></div>
+
+            <!-- Formula (auto states) -->
+            <div class="formula-wrap" id="formula-wrap">
+              <div class="formula-title">How it's calculated</div>
+              <div class="formula">
+                <div class="f-block">
+                  <div class="f-lbl">Base rate</div>
+                  <div class="f-val" id="f-base">4.00%</div>
+                  <div class="f-tag" id="f-cat" style="color:var(--text-muted)">Books › Bookshops</div>
+                </div>
+                <div class="f-op">×</div>
+                <div class="f-block">
+                  <div class="f-lbl">BL performance</div>
+                  <div class="f-val">× 0.90</div>
+                  <div class="f-tag">Companies −10%</div>
+                </div>
+                <div class="f-op">×</div>
+                <div class="f-block">
+                  <div class="f-lbl">Loyalty</div>
+                  <div class="f-val">× 0.90</div>
+                  <div class="f-tag">Over 1 year −10%</div>
+                </div>
+                <div class="f-op">=</div>
+                <div class="f-result">
+                  <div class="f-lbl">Your rate</div>
+                  <div class="f-val" id="f-result-val">3.24%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Override info (override state) -->
+            <div class="override-info" id="override-info">
+              <div class="override-info-inner">
+                <div class="oi-row"><span class="oi-label">Active since</span><span class="oi-val">20 May 2026</span></div>
+                <div class="oi-row"><span class="oi-label">Automatic rate (paused)</span><span class="oi-auto">would be <span>3.24%</span></span></div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /commission-card -->
+
+        <div class="section-label" style="margin-top:18px" id="discount-label">✦ Your discount breakdown</div>
+        <div class="discount-grid" id="discount-grid">
+
+          <!-- BL Performance -->
+          <div class="d-card">
+            <div class="d-card-head">
+              <div class="d-icon d-icon-bl">🏆</div>
+              <div>
+                <div class="d-head-title">Business League Performance</div>
+                <div class="d-head-sub">Based on your level in the last completed round</div>
+              </div>
+            </div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Unicorns</div><div class="d-level-cond">UCC segment</div></div><div class="d-disc">−25%</div></div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Corporations</div><div class="d-level-cond">UCC segment</div></div><div class="d-disc">−15%</div></div>
+            <div class="d-row current"><div class="d-level"><div class="d-level-name">Companies <span class="badge badge-active">← You are here</span></div><div class="d-level-cond">UCC segment · Round 2, Season 5</div></div><div class="d-disc">−10%</div></div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Newcomers / Freelancers / Start-Ups <span class="badge badge-locked">No discount</span></div><div class="d-level-cond">SFN segment or not present in BL</div></div><div class="d-disc zero">0%</div></div>
+          </div>
+
+          <!-- Loyalty -->
+          <div class="d-card">
+            <div class="d-card-head">
+              <div class="d-icon d-icon-loy">⏳</div>
+              <div>
+                <div class="d-head-title">Loyalty Discount</div>
+                <div class="d-head-sub">Based on months since your most recent activation</div>
+              </div>
+            </div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Over 10 years</div><div class="d-level-cond">120+ months</div></div><div class="d-disc">−50%</div></div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Over 5 years</div><div class="d-level-cond">60+ months</div></div><div class="d-disc">−25%</div></div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Over 3 years</div><div class="d-level-cond">36+ months</div></div><div class="d-disc">−15%</div></div>
+            <div class="d-row current"><div class="d-level"><div class="d-level-name">Over 1 year <span class="badge badge-active">← You are here</span></div><div class="d-level-cond">Active since May 2025 · 14 months</div></div><div class="d-disc">−10%</div></div>
+            <div class="d-row"><div class="d-level"><div class="d-level-name">Standard <span class="badge badge-locked">No discount</span></div><div class="d-level-cond">≤ 12 months</div></div><div class="d-disc zero">0%</div></div>
+          </div>
+
+        </div><!-- /discount-grid -->
+      </div><!-- /right -->
+    </div><!-- /page-grid -->
+  </div><!-- /content -->
+</div><!-- /main-wrap -->
+
+<!-- HISTORY MODAL -->
+<div id="hmodal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div style="font-size:0.58rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-purple-lt);margin-bottom:3px">Commission history</div>
+        <div style="font-size:0.92rem;font-weight:700;color:var(--text-primary)">Rate history since latest activation</div>
+        <div style="font-size:0.65rem;color:var(--text-muted);margin-top:2px">Activation date: May 2025</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-scroll">
+      <!-- NORMAL history (includes both round start and category change entries) -->
+      <table class="modal-table" id="hist-normal">
+        <thead>
+          <tr>
+            <th class="modal-th">Date</th>
+            <th class="modal-th">Trigger</th>
+            <th class="modal-th">BL Level</th>
+            <th class="modal-th">Performance</th>
+            <th class="modal-th">Loyalty</th>
+            <th class="modal-th" style="text-align:right">Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hist-current">
+            <td class="modal-td"><div style="font-weight:700;color:var(--accent-purple-lt)">19 May 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St2 · R2 <span style="background:rgba(124,92,252,0.2);color:var(--accent-purple-lt);padding:1px 6px;border-radius:4px;font-size:0.5rem;font-weight:800;margin-left:4px">Current</span></div></td>
+            <td class="modal-td"><span class="trig-pill trig-cat">📁 Category change</span></td>
+            <td class="modal-td" style="font-weight:600">Companies</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:800;color:var(--accent-green)">3.24%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">04 May 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St2 · R2</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Companies</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.24%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">04 Apr 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St2 · R1</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Companies</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.24%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">03 Mar 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St1 · R3</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Start-Ups</td>
+            <td class="modal-td" style="color:var(--text-muted)">0%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.60%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">01 Feb 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St1 · R2</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Newcomers</td>
+            <td class="modal-td" style="color:var(--text-muted)">0%</td>
+            <td class="modal-td" style="color:var(--text-muted)">0%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">4.00%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- OVERRIDE history -->
+      <table class="modal-table" id="hist-override" style="display:none">
+        <thead>
+          <tr>
+            <th class="modal-th">Date</th>
+            <th class="modal-th">Trigger</th>
+            <th class="modal-th">BL Level</th>
+            <th class="modal-th">Performance</th>
+            <th class="modal-th">Loyalty</th>
+            <th class="modal-th" style="text-align:right">Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hist-override">
+            <td class="modal-td"><div style="font-weight:700;color:var(--amber-lt)">20 May 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St2 · R2 <span style="background:rgba(245,158,11,0.2);color:var(--amber-lt);padding:1px 6px;border-radius:4px;font-size:0.5rem;font-weight:800;margin-left:4px">Current</span></div></td>
+            <td class="modal-td"><span class="trig-pill trig-over">🔒 Override activated</span></td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="text-align:right;font-weight:800;color:var(--amber-lt)">4.50%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">04 May 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St2 · R2</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Companies</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.24%</td>
+          </tr>
+          <tr class="hist-exit">
+            <td class="modal-td"><div style="color:var(--accent-green-lt)">15 Mar 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St1 · R3</div></td>
+            <td class="modal-td"><span class="trig-pill trig-exit">✓ Override removed</span></td>
+            <td class="modal-td">Start-Ups</td>
+            <td class="modal-td" style="color:var(--text-muted)">0%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.60%</td>
+          </tr>
+          <tr class="hist-override">
+            <td class="modal-td"><div style="color:var(--text-secondary)">01 Mar 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St1 · R3</div></td>
+            <td class="modal-td"><span class="trig-pill trig-over">🔒 Override activated</span></td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="color:var(--text-muted)">—</td>
+            <td class="modal-td" style="text-align:right;font-weight:700;color:var(--amber-lt)">5.00%</td>
+          </tr>
+          <tr>
+            <td class="modal-td"><div style="color:var(--text-secondary)">03 Mar 2026</div><div style="font-size:0.58rem;color:var(--text-muted)">S5 · St1 · R3</div></td>
+            <td class="modal-td"><span class="trig-pill trig-round">⚡ Round start</span></td>
+            <td class="modal-td">Start-Ups</td>
+            <td class="modal-td" style="color:var(--text-muted)">0%</td>
+            <td class="modal-td" style="color:var(--accent-green)">−10%</td>
+            <td class="modal-td" style="text-align:right;font-weight:700">3.60%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentState = 'normal';
+
+  function setState(s) {
+    currentState = s;
+
+    // Button states
+    document.getElementById('btn-normal').className   = 'state-btn' + (s==='normal'   ? ' active' : '');
+    document.getElementById('btn-override').className = 'state-btn' + (s==='override' ? ' active-override' : '');
+
+    const card       = document.getElementById('commission-card');
+    const snc        = document.getElementById('special-nc-badge');
+    const catBanner  = document.getElementById('cat-change-banner');
+    const fWrap      = document.getElementById('formula-wrap');
+    const oInfo      = document.getElementById('override-info');
+    const dGrid      = document.getElementById('discount-grid');
+    const rateNum    = document.getElementById('rate-num');
+    const fResultVal = document.getElementById('f-result-val');
+    const fBase      = document.getElementById('f-base');
+    const fCat       = document.getElementById('f-cat');
+    const divider    = document.getElementById('comm-divider');
+
+    if (s === 'normal') {
+      card.className = 'commission-card';
+      snc.style.display = 'none';
+      catBanner.style.display = 'none';
+      fWrap.style.display = 'block';
+      fWrap.classList.remove('dimmed');
+      oInfo.style.display = 'none';
+      dGrid.classList.remove('dimmed');
+      divider.style.display = 'block';
+      rateNum.textContent = '3.24';
+      fBase.textContent = '4.00%';
+      fCat.textContent = 'Books › Bookshops';
+      fResultVal.textContent = '3.24%';
+    }
+
+    if (s === 'category') {
+      card.className = 'commission-card';
+      snc.style.display = 'none';
+      catBanner.style.display = 'flex';
+      fWrap.style.display = 'block';
+      fWrap.classList.remove('dimmed');
+      oInfo.style.display = 'none';
+      dGrid.classList.remove('dimmed');
+      divider.style.display = 'block';
+      rateNum.textContent = '4.95';
+      fBase.textContent = '6.00%';  // new category base rate
+      fCat.textContent = 'Electronics › Peripherals';
+      fResultVal.textContent = '4.95%';
+    }
+
+    if (s === 'override') {
+      card.className = 'commission-card override-state';
+      snc.style.display = 'flex';
+      catBanner.style.display = 'none';
+      fWrap.style.display = 'none';
+      oInfo.style.display = 'block';
+      dGrid.classList.add('dimmed');
+      divider.style.display = 'block';
+      rateNum.textContent = '4.50';
+      fResultVal.textContent = '4.50%';
+    }
+  }
+
+  function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('soverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('soverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+  function openModal() {
+    document.getElementById('hmodal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('hist-normal').style.display   = currentState==='normal'   ? '' : 'none';
+    document.getElementById('hist-override').style.display = currentState==='override' ? '' : 'none';
+  }
+  function closeModal() { document.getElementById('hmodal').classList.remove('open'); document.body.style.overflow=''; }
+  document.addEventListener('keydown', e => { if (e.key==='Escape') { closeSidebar(); closeModal(); } });
+</script>
+</body>
+</html>
