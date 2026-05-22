@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec Funcțional v1 — Sistem Automat Network Commission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #0a0b1a;
+  --bg2:         #0d0f21;
+  --card:        #111428;
+  --purple:      #7c5cfc;
+  --purple-dk:   #5f3dc4;
+  --purple-lt:   #a78bfa;
+  --green:       #00d68f;
+  --green-lt:    #6ee7b7;
+  --amber:       #fbbf24;
+  --red:         #f87171;
+  --txt:         #ffffff;
+  --txt2:        #9ca3af;
+  --txt3:        #6b7280;
+  --glass:       rgba(255,255,255,0.04);
+  --border:      rgba(255,255,255,0.08);
+  --font:        'Onest', system-ui, sans-serif;
+  --r:           14px;
+  --tr:          300ms cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after { margin:0;padding:0;box-sizing:border-box }
+html { scroll-behavior:smooth }
+body {
+  font-family: var(--font);
+  background: radial-gradient(ellipse at 50% 0%, #12143a 0%, var(--bg) 60%, #070810 100%);
+  color: var(--txt);
+  min-height: 100vh;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* ── Layout ── */
+.layout { display:flex; min-height:100vh }
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed; top:0; left:0; width:260px; height:100vh;
+  overflow-y: auto; z-index:100; scrollbar-width:none;
+  background: linear-gradient(180deg,rgba(11,13,30,0.97),rgba(7,9,20,0.99));
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.25rem;
+  display: flex; flex-direction:column; gap:0.15rem;
+  backdrop-filter: blur(20px);
+}
+.sidebar::-webkit-scrollbar { display:none }
+.sidebar-brand {
+  display:flex; align-items:center; gap:0.6rem;
+  margin-bottom:1.75rem; text-decoration:none; color:#fff;
+}
+.sidebar-brand span { font-weight:800; font-size:0.95rem; letter-spacing:-0.02em }
+.sidebar-label {
+  font-size:0.62rem; font-weight:800; letter-spacing:0.13em;
+  text-transform:uppercase; color:var(--txt3);
+  padding: 0.9rem 0.5rem 0.35rem;
+}
+.sidebar a {
+  display:flex; align-items:center; gap:0.55rem;
+  padding:0.5rem 0.7rem; border-radius:9px;
+  color:var(--txt2); text-decoration:none;
+  font-size:0.82rem; font-weight:500;
+  transition: all var(--tr);
+}
+.sidebar a:hover { color:#fff; background:rgba(255,255,255,0.04) }
+.sidebar a.active { color:#fff; background:rgba(124,92,252,0.15); font-weight:600 }
+.sidebar-back { margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border) }
+
+/* ── Main ── */
+.main { margin-left:260px; flex:1; padding:3rem clamp(2rem,4vw,4rem) 6rem }
+.max-w { max-width:900px }
+
+/* ── Hero ── */
+.hero { padding:2rem 0 2.5rem; margin-bottom:1rem; border-bottom:1px solid var(--border) }
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  background:rgba(124,92,252,0.1); border:1px solid rgba(124,92,252,0.2);
+  padding:0.3rem 0.9rem; border-radius:999px;
+  font-size:0.65rem; font-weight:800; letter-spacing:0.13em;
+  text-transform:uppercase; color:var(--purple-lt);
+  margin-bottom:0.9rem;
+}
+.hero h1 {
+  font-size: clamp(1.9rem,3.5vw,2.8rem);
+  font-weight:900; letter-spacing:-0.04em; line-height:1.08;
+  margin-bottom:0.6rem;
+}
+.hero h1 span {
+  background:linear-gradient(135deg,var(--purple-lt),var(--purple));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hero-meta { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:1rem }
+.hero-meta span { font-size:0.75rem; color:var(--txt3) }
+.hero-meta strong { color:var(--txt2); font-weight:600 }
+
+/* ── Sections ── */
+.section { margin-bottom:4rem; scroll-margin-top:2rem }
+.section-eyebrow {
+  display:inline-flex; align-items:center; gap:0.4rem;
+  font-size:0.62rem; font-weight:800; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--purple-lt); margin-bottom:0.6rem;
+}
+.section h2 {
+  font-size:1.55rem; font-weight:800; letter-spacing:-0.03em;
+  margin-bottom:0.4rem;
+}
+.section-desc { color:var(--txt2); font-size:0.88rem; max-width:660px; margin-bottom:1.75rem }
+
+/* ── Cards ── */
+.card {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r); padding:1.4rem 1.6rem; margin-bottom:1rem;
+}
+.card-title {
+  font-size:0.72rem; font-weight:800; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--purple-lt); margin-bottom:0.75rem;
+}
+.card p { font-size:0.88rem; color:var(--txt2); line-height:1.75 }
+.card p strong { color:var(--txt); font-weight:700 }
+.card p code {
+  background:rgba(124,92,252,0.12); padding:1px 6px;
+  border-radius:5px; font-family:monospace; font-size:0.82rem;
+  color:var(--purple-lt);
+}
+
+/* ── Formula box ── */
+.formula-box {
+  background:rgba(124,92,252,0.08); border:1px solid rgba(124,92,252,0.2);
+  border-radius:12px; padding:1.2rem 1.5rem; margin:1rem 0;
+  font-family:monospace; font-size:0.9rem; color:#fff;
+  letter-spacing:0.01em; line-height:1.9;
+}
+.formula-box .comment { color:var(--txt3); font-size:0.78rem }
+
+/* ── Tables ── */
+.spec-table { width:100%; border-collapse:collapse; font-size:0.84rem; margin-bottom:1.25rem }
+.spec-table thead tr { background:rgba(255,255,255,0.03) }
+.spec-table th {
+  padding:9px 12px; font-size:0.62rem; font-weight:800;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--txt3);
+  text-align:left; border-bottom:1px solid var(--border);
+}
+.spec-table td {
+  padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.04);
+  vertical-align:middle; color:var(--txt2);
+}
+.spec-table tbody tr:last-child td { border-bottom:none }
+.spec-table tbody tr:hover { background:rgba(255,255,255,0.02) }
+.spec-table td strong { color:var(--txt); font-weight:600 }
+.spec-table td code {
+  background:rgba(124,92,252,0.1); padding:2px 7px; border-radius:5px;
+  font-family:monospace; font-size:0.8rem; color:var(--purple-lt);
+}
+
+/* Badges */
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 9px; border-radius:8px;
+  font-size:0.66rem; font-weight:800; letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.badge-green  { background:rgba(0,214,143,0.12); color:var(--green-lt) }
+.badge-amber  { background:rgba(251,191,36,0.12); color:var(--amber) }
+.badge-purple { background:rgba(124,92,252,0.12); color:var(--purple-lt) }
+.badge-red    { background:rgba(248,113,113,0.12); color:var(--red) }
+.badge-gray   { background:rgba(255,255,255,0.06); color:var(--txt2) }
+
+/* ── Alert boxes ── */
+.alert {
+  display:flex; gap:12px; align-items:flex-start;
+  border-radius:12px; padding:14px 16px; margin:1rem 0;
+  font-size:0.86rem; line-height:1.7;
+}
+.alert-icon { font-size:1rem; flex-shrink:0; margin-top:1px }
+.alert-body { color:var(--txt2) }
+.alert-body strong { color:var(--txt); font-weight:700 }
+.alert.warn  { background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.2) }
+.alert.info  { background:rgba(124,92,252,0.07); border:1px solid rgba(124,92,252,0.18) }
+.alert.note  { background:rgba(0,214,143,0.06);  border:1px solid rgba(0,214,143,0.18) }
+.alert.danger{ background:rgba(248,113,113,0.07); border:1px solid rgba(248,113,113,0.2) }
+
+/* ── Step list ── */
+.steps { display:flex; flex-direction:column; gap:0.6rem; margin:1rem 0 }
+.step {
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:10px; padding:12px 14px;
+}
+.step-num {
+  background:rgba(124,92,252,0.15); color:var(--purple-lt);
+  font-weight:800; font-size:0.72rem; border-radius:6px;
+  width:24px; height:24px; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.step-body { font-size:0.86rem; color:var(--txt2); line-height:1.7 }
+.step-body strong { color:var(--txt); font-weight:700 }
+.step-body code {
+  background:rgba(124,92,252,0.1); padding:1px 6px; border-radius:4px;
+  font-family:monospace; font-size:0.8rem; color:var(--purple-lt);
+}
+
+/* ── DB schema ── */
+.db-block {
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px; padding:1.2rem 1.4rem; margin:0.75rem 0;
+  font-family:monospace; font-size:0.78rem; line-height:1.9;
+  color:var(--txt2); overflow-x:auto;
+}
+.db-block .kw  { color:var(--purple-lt) }
+.db-block .cmt { color:var(--txt3) }
+.db-block .str { color:var(--green-lt) }
+.db-block .tbl { color:var(--amber) }
+
+/* ── Divider ── */
+hr.sep { border:none; border-top:1px solid var(--border); margin:3rem 0 }
+
+/* ── TOC number ── */
+.toc-num { color:var(--txt3); font-size:0.75rem; margin-right:4px }
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <span><span style="font-weight:800">Business</span><span style="font-weight:300">League</span></span>
+  </div>
+
+  <div class="sidebar-label">Cuprins</div>
+  <a href="#overview" class="active">§1 Prezentare generală</a>
+  <a href="#standard-nc">§2 NC Standard pe categorie</a>
+  <a href="#performance">§3 Discount performanță BL</a>
+  <a href="#loyalty">§4 Discount vechime</a>
+  <a href="#formula">§5 Formula finală NC</a>
+  <a href="#automation">§6 Automatizare & trigger</a>
+  <a href="#transitions">§7 Tranziții de nivel</a>
+  <a href="#override">§8 Sistem decuplare (override)</a>
+  <a href="#db-schema">§9 Schema bază de date</a>
+  <a href="#audit">§10 Audit trail</a>
+  <a href="#open-q">§11 Întrebări deschise</a>
+
+  <div class="sidebar-back">
+    <a href="#" style="color:var(--txt3);font-size:0.8rem">↑ Sus</a>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+<div class="max-w">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-kicker">Spec Funcțional v1</div>
+  <h1>Sistem Automat de Modificare<br><span>Network Commission</span></h1>
+  <p style="color:var(--txt2);max-width:580px;margin-top:0.5rem">
+    Definirea logicii automate de calcul și actualizare a comisionului de rețea (NC)
+    pentru fiecare magazin activ, în funcție de categorie, performanță BL și vechime.
+  </p>
+  <div class="hero-meta">
+    <span><strong>Versiune:</strong> v1.0</span>
+    <span><strong>Data:</strong> Mai 2026</span>
+    <span><strong>Status:</strong> Draft pentru review</span>
+    <span><strong>Frecvență actualizare:</strong> Prima zi a fiecărei runde</span>
+  </div>
+</div>
+
+<!-- ══ §1 OVERVIEW ══ -->
+<section class="section" id="overview">
+  <div class="section-eyebrow">§1</div>
+  <h2>Prezentare generală</h2>
+  <p class="section-desc">
+    Sistemul calculează automat Network Commission-ul efectiv al fiecărui magazin activ
+    ca produs al comisionului standard pe categorie/subcategorie și a doi factori de discount
+    cumulativi: discount de performanță BL și discount de vechime.
+  </p>
+
+  <div class="formula-box">
+    NC_final = NC_standard × factor_performanță × factor_vechime
+    <div class="comment">-- Toți factorii sunt ≤ 1.00; cu cât mai mic, cu atât reducerea e mai mare</div>
+    <div class="comment">-- NC_final este rotunjit la 2 zecimale</div>
+  </div>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div class="alert-body">
+      <strong>Scope:</strong> Sistemul se aplică tuturor magazinelor <strong>active în platforma 2Performant</strong>
+      care participă sau nu în Business League. Calculul se rulează automat în
+      <strong>prima zi a fiecărei runde</strong>. Un admin cu rolul <code>special_NT_COM</code>
+      poate decupla orice magazin de la logica automată și seta un NC manual.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §2 NC STANDARD PE CATEGORIE ══ -->
+<section class="section" id="standard-nc">
+  <div class="section-eyebrow">§2</div>
+  <h2>NC Standard pe categorie / subcategorie</h2>
+  <p class="section-desc">
+    Tabelul de mai jos definește comisionul standard de rețea pentru fiecare combinație
+    categorie–subcategorie. Dacă un magazin <strong>schimbă categoria sau subcategoria</strong>,
+    comisionul standard se actualizează automat la noua valoare în prima zi a rundei curente.
+  </p>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Trigger schimbare categorie:</strong> Orice modificare de categorie/subcategorie
+      inițiată de un operator sau de un magazin declanșează recalculul NC la prima rulare
+      automată (prima zi a rundei în curs sau imediat dacă schimbarea survine în prima zi a rundei).
+    </div>
+  </div>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Categorie → Subcategorie</th>
+        <th>NC Standard</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Adult</strong></td><td><code>8.00%</code></td></tr>
+      <tr><td>Automotive › Parts and Accessories</td><td><code>5.00%</code></td></tr>
+      <tr><td>Automotive › Tires</td><td><code>4.50%</code></td></tr>
+      <tr><td>Babies Kids &amp; Toys</td><td><code>4.00%</code></td></tr>
+      <tr><td>Beauty › Cosmetics &amp; Skincare</td><td><code>6.00%</code></td></tr>
+      <tr><td>Beauty › Perfume &amp; Fragrances Producers</td><td><code>6.00%</code></td></tr>
+      <tr><td>Beauty › Perfume &amp; Fragrances Shops</td><td><code>6.00%</code></td></tr>
+      <tr><td>Beauty › Professional &amp; Salon Supplies</td><td><code>5.00%</code></td></tr>
+      <tr><td>Books › Bookshops</td><td><code>4.00%</code></td></tr>
+      <tr><td>Books › Publishing House</td><td><code>5.00%</code></td></tr>
+      <tr><td>Electronics › Gaming</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › IT, Computers &amp; Phones</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › Mobile Phones</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › Photo &amp; Video</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › Security &amp; Surveillance</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › Smart Home &amp; Small Appliances</td><td><code>4.00%</code></td></tr>
+      <tr><td>Electronics › Telephone Accessories</td><td><code>4.00%</code></td></tr>
+      <tr><td>Fashion › Clothing &amp; General</td><td><code>5.00%</code></td></tr>
+      <tr><td>Fashion › Eyewear &amp; Optics</td><td><code>5.00%</code></td></tr>
+      <tr><td>Fashion › Footwear</td><td><code>5.00%</code></td></tr>
+      <tr><td>Fashion › Sportswear</td><td><code>5.00%</code></td></tr>
+      <tr><td>Fashion › Traditional &amp; Niche</td><td><code>5.00%</code></td></tr>
+      <tr><td>Food › Grocery &amp; General</td><td><code>5.00%</code></td></tr>
+      <tr><td>Food › Specialty &amp; Gourmet</td><td><code>5.00%</code></td></tr>
+      <tr><td>Games</td><td><code>5.00%</code></td></tr>
+      <tr><td>Gifts &amp; Flowers</td><td><code>5.00%</code></td></tr>
+      <tr><td>Health › Medical</td><td><code>6.50%</code></td></tr>
+      <tr><td>Health › Supplements &amp; Natural</td><td><code>5.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › Accessories</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › Appliances &amp; Household</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › Décor &amp; Interior Design</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › DIY, Tools &amp; Building</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › Furniture &amp; Bedding</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › Garden &amp; Outdoor</td><td><code>6.00%</code></td></tr>
+      <tr><td>Home &amp; Garden › General &amp; Other</td><td><code>6.00%</code></td></tr>
+      <tr><td>Insurance</td><td><code>2.00%</code></td></tr>
+      <tr><td>Jewelry</td><td><code>4.00%</code></td></tr>
+      <tr><td>Jewelry › High End</td><td><code>5.00%</code></td></tr>
+      <tr><td>Office supplies</td><td><code>3.00%</code></td></tr>
+      <tr><td>Online Mall</td><td><code>6.00%</code></td></tr>
+      <tr><td>Others</td><td><code>5.00%</code></td></tr>
+      <tr><td>Pet supplies</td><td><code>5.00%</code></td></tr>
+      <tr><td>Pharma</td><td><code>3.00%</code></td></tr>
+      <tr><td>Software</td><td><code>3.00%</code></td></tr>
+      <tr><td>Sports &amp; outdoors</td><td><code>5.00%</code></td></tr>
+      <tr><td>Telecom</td><td><code>4.00%</code></td></tr>
+      <tr><td>Watches</td><td><code>3.00%</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §3 DISCOUNT PERFORMANȚĂ BL ══ -->
+<section class="section" id="performance">
+  <div class="section-eyebrow">§3</div>
+  <h2>Discount performanță Business League</h2>
+  <p class="section-desc">
+    Reducerea se aplică în funcție de nivelul la care se află magazinul
+    <strong>în ultima rundă finalizată</strong> (last round).
+    Nivelurile sunt grupate în două segmente cu comportament distinct de tranziție.
+  </p>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Nivel BL</th>
+        <th>Segment</th>
+        <th>Discount</th>
+        <th>Factor (×NC_standard)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Unicorns</strong></td>
+        <td><span class="badge badge-purple">UCC</span></td>
+        <td><code>25.0%</code></td>
+        <td><code>× 0.75</code></td>
+      </tr>
+      <tr>
+        <td><strong>Corporations</strong></td>
+        <td><span class="badge badge-purple">UCC</span></td>
+        <td><code>15.0%</code></td>
+        <td><code>× 0.85</code></td>
+      </tr>
+      <tr>
+        <td><strong>Companies</strong></td>
+        <td><span class="badge badge-purple">UCC</span></td>
+        <td><code>10.0%</code></td>
+        <td><code>× 0.90</code></td>
+      </tr>
+      <tr>
+        <td>Start-Ups</td>
+        <td><span class="badge badge-gray">SFN</span></td>
+        <td><code>0%</code></td>
+        <td><code>× 1.00</code></td>
+      </tr>
+      <tr>
+        <td>Freelancers</td>
+        <td><span class="badge badge-gray">SFN</span></td>
+        <td><code>0%</code></td>
+        <td><code>× 1.00</code></td>
+      </tr>
+      <tr>
+        <td>Newcomers</td>
+        <td><span class="badge badge-gray">SFN</span></td>
+        <td><code>0%</code></td>
+        <td><code>× 1.00</code></td>
+      </tr>
+      <tr>
+        <td>Neînscris în BL</td>
+        <td><span class="badge badge-gray">–</span></td>
+        <td><code>0%</code></td>
+        <td><code>× 1.00</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert note">
+    <div class="alert-icon">✅</div>
+    <div class="alert-body">
+      <strong>Referință:</strong> Nivelul folosit este cel din coloana <code>LevelName</code>
+      la finalul ultimei runde (câmpul <code>IsLatestRound = TRUE</code>) din
+      <code>business_league.advertisers_business_league_stats_latest</code>.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §4 DISCOUNT VECHIME ══ -->
+<section class="section" id="loyalty">
+  <div class="section-eyebrow">§4</div>
+  <h2>Discount vechime (loyalty)</h2>
+  <p class="section-desc">
+    Reducerea se calculează pe baza numărului de luni scurse de la <strong>prima dată de activare</strong>
+    a campaniei în platforma 2Performant. Pragurile sunt evaluate în ordine descrescătoare
+    (se aplică primul prag atins).
+  </p>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Prag vechime</th>
+        <th>Condiție</th>
+        <th>Discount</th>
+        <th>Factor (×)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>&gt; 120 luni</strong> <span class="badge badge-amber" style="margin-left:6px">10+ ani</span></td>
+        <td>luni_de_la_activare &gt; 120</td>
+        <td><code>50.0%</code></td>
+        <td><code>× 0.50</code></td>
+      </tr>
+      <tr>
+        <td><strong>&gt; 60 luni</strong> <span class="badge badge-amber" style="margin-left:6px">5+ ani</span></td>
+        <td>luni_de_la_activare &gt; 60</td>
+        <td><code>25.0%</code></td>
+        <td><code>× 0.75</code></td>
+      </tr>
+      <tr>
+        <td><strong>&gt; 36 luni</strong> <span class="badge badge-green" style="margin-left:6px">3+ ani</span></td>
+        <td>luni_de_la_activare &gt; 36</td>
+        <td><code>15.0%</code></td>
+        <td><code>× 0.85</code></td>
+      </tr>
+      <tr>
+        <td><strong>&gt; 12 luni</strong> <span class="badge badge-green" style="margin-left:6px">1+ an</span></td>
+        <td>luni_de_la_activare &gt; 12</td>
+        <td><code>10.0%</code></td>
+        <td><code>× 0.90</code></td>
+      </tr>
+      <tr>
+        <td>Standard</td>
+        <td>luni_de_la_activare ≤ 12</td>
+        <td><code>0%</code></td>
+        <td><code>× 1.00</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <div class="card-title">Definire „prima dată de activare"</div>
+    <p>
+      Data de activare = data la care campania a primit prima dată statusul <code>active</code>
+      în baza de date 2Performant. Câmpul de referință: <code>campaigns.first_activated_at</code>
+      (sau echivalentul din sursa de date internă).<br><br>
+      Numărul de luni se calculează ca:<br>
+      <code>FLOOR(DATEDIFF(CURRENT_DATE, first_activated_at) / 30.4375)</code>
+    </p>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §5 FORMULA FINALĂ ══ -->
+<section class="section" id="formula">
+  <div class="section-eyebrow">§5</div>
+  <h2>Formula finală de calcul NC</h2>
+
+  <div class="formula-box">
+    <span class="comment">-- Pasul 1: NC Standard din tabelul de categorii</span><br>
+    NC_standard  ← lookup(categorie, subcategorie)<br><br>
+    <span class="comment">-- Pasul 2: Factor performanță BL (din ultima rundă finalizată)</span><br>
+    f_perf       ← CASE LevelName<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN 'Unicorns'      THEN 0.75<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN 'Corporations'  THEN 0.85<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN 'Companies'     THEN 0.90<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE 1.00<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END<br><br>
+    <span class="comment">-- Pasul 3: Factor vechime (luni de la prima activare)</span><br>
+    f_loyalty    ← CASE<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN months &gt; 120 THEN 0.50<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN months &gt;  60 THEN 0.75<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN months &gt;  36 THEN 0.85<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN months &gt;  12 THEN 0.90<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE 1.00<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END<br><br>
+    <span class="comment">-- Pasul 4: NC final</span><br>
+    NC_final     ← ROUND(NC_standard × f_perf × f_loyalty, 2)
+  </div>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:1.5rem 0 1rem">Exemple de calcul</h3>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Magazin (exemplu)</th>
+        <th>Categorie</th>
+        <th>NC std</th>
+        <th>Nivel BL</th>
+        <th>f_perf</th>
+        <th>Vechime</th>
+        <th>f_loyalty</th>
+        <th>NC final</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>bookzone.ro</strong></td>
+        <td>Books › Bookshops</td>
+        <td>4.00%</td>
+        <td>Unicorns</td>
+        <td>0.75</td>
+        <td>72 luni</td>
+        <td>0.75</td>
+        <td><strong>2.25%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>fashiondays.ro</strong></td>
+        <td>Fashion › Clothing</td>
+        <td>5.00%</td>
+        <td>Corporations</td>
+        <td>0.85</td>
+        <td>48 luni</td>
+        <td>0.85</td>
+        <td><strong>3.61%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>magazin-nou.ro</strong></td>
+        <td>Beauty › Skincare</td>
+        <td>6.00%</td>
+        <td>Start-Ups</td>
+        <td>1.00</td>
+        <td>8 luni</td>
+        <td>1.00</td>
+        <td><strong>6.00%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>drmax.ro</strong></td>
+        <td>Pharma</td>
+        <td>3.00%</td>
+        <td>Unicorns</td>
+        <td>0.75</td>
+        <td>84 luni</td>
+        <td>0.75</td>
+        <td><strong>1.69%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>NC minim:</strong> Trebuie definit un NC minim absolut (ex. <code>0.50%</code>)
+      sub care sistemul nu poate coborî indiferent de discounturi combinate.
+      <strong>Valoarea minimă rămâne de decis.</strong>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §6 AUTOMATIZARE & TRIGGER ══ -->
+<section class="section" id="automation">
+  <div class="section-eyebrow">§6</div>
+  <h2>Automatizare &amp; trigger</h2>
+  <p class="section-desc">
+    Sistemul rulează automat o dată per rundă. Procesul trebuie să fie idempotent
+    (poate fi rulat de mai multe ori fără efecte secundare).
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Trigger:</strong> Prima zi a fiecărei runde Business League
+        (ex. <code>RoundStartDate</code> din tabelul de runde). Job-ul se execută
+        la <code>00:05 ora României</code> în ziua de start a rundei.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Selectare magazine eligibile:</strong> Toate campaniile cu status
+        <code>active</code> care <strong>nu au</strong> flag-ul de decuplare
+        (<code>nc_override_enabled = FALSE</code>).
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Calculul NC:</strong> Pentru fiecare magazin eligibil se aplică
+        formula din §5: lookup categorie → f_perf din BL → f_loyalty din vechime → NC_final.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Comparare cu valoarea curentă:</strong> Dacă <code>NC_final ≠ NC_curent</code>,
+        se actualizează comisionul în tabelul campaniei și se înregistrează în audit log.
+        Dacă valorile sunt identice, nu se face nicio scriere.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Notificare:</strong> Magazinele la care s-a modificat NC primesc notificarea
+        prin pop-up-ul de consent (spec separat: <em>nc-popup-spec-v4</em>).
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <strong>Raport de execuție:</strong> La finalul job-ului se generează un raport
+        intern cu: număr magazine procesate, număr modificări efectuate, erori dacă există.
+        Raportul se trimite pe canalul intern Slack / email Ops.
+      </div>
+    </div>
+  </div>
+
+  <div class="alert note">
+    <div class="alert-icon">✅</div>
+    <div class="alert-body">
+      <strong>Schimbare de categorie în mijlocul rundei:</strong> Dacă un operator
+      modifică categoria unui magazin în afara zilei de start a rundei, noul NC standard
+      se aplică la <strong>prima zi a rundei următoare</strong>, nu imediat.
+      Excepție: dacă modificarea se face în prima zi a rundei curente (înainte de rularea job-ului),
+      se preia noua categorie.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §7 TRANZIȚII DE NIVEL ══ -->
+<section class="section" id="transitions">
+  <div class="section-eyebrow">§7</div>
+  <h2>Tranziții de nivel BL — impact asupra NC</h2>
+  <p class="section-desc">
+    Nivelul BL al unui magazin determină factorul de performanță. Regulile de tranziție
+    între niveluri dictează când se schimbă acest factor.
+  </p>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Tip tranziție</th>
+        <th>Segment</th>
+        <th>Frecvență</th>
+        <th>Impact NC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Unicorns ↔ Corporations ↔ Companies</td>
+        <td><span class="badge badge-purple">UCC</span></td>
+        <td>La fiecare rundă</td>
+        <td>NC recalculat la prima zi a rundei următoare</td>
+      </tr>
+      <tr>
+        <td>Start-Ups ↔ Freelancers ↔ Newcomers</td>
+        <td><span class="badge badge-gray">SFN</span></td>
+        <td>La fiecare rundă</td>
+        <td>f_perf = 1.00 indiferent de nivel; NC neafectat de performanță</td>
+      </tr>
+      <tr>
+        <td>UCC → SFN sau SFN → UCC</td>
+        <td>Cross-segment</td>
+        <td>O dată per stage (3 stage-uri/sezon)</td>
+        <td>NC recalculat la prima zi a rundei din noul stage</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div class="alert-body">
+      <strong>Referință date:</strong> Nivelul curent al magazinului se citește din
+      <code>business_league.advertisers_business_league_stats_latest</code>
+      unde <code>IsLatestRound = TRUE</code>. La momentul rulării job-ului din prima zi
+      a noii runde, tabelul trebuie să fie deja actualizat cu nivelurile din runda tocmai finalizată.
+      <strong>Ordinea de execuție este importantă: mai întâi se actualizează nivelurile BL,
+      apoi se rulează job-ul de NC.</strong>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §8 SISTEM DECUPLARE / OVERRIDE ══ -->
+<section class="section" id="override">
+  <div class="section-eyebrow">§8</div>
+  <h2>Sistem de decuplare (override manual NC)</h2>
+  <p class="section-desc">
+    Un admin cu rolul dedicat <code>special_NT_COM</code> poate exclude orice magazin
+    de la logica automată și poate seta un NC manual. Decuplarea este auditată complet.
+  </p>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:0 0 0.75rem">8.1 Rolul <code>special_NT_COM</code></h3>
+  <div class="card">
+    <div class="card-title">Permisiuni rol</div>
+    <p>
+      • Poate activa/dezactiva flag-ul <code>nc_override_enabled</code> pentru orice campanie<br>
+      • Poate seta <code>nc_override_value</code> — valoarea NC manuală (% cu 2 zecimale)<br>
+      • Poate vizualiza istoricul de override-uri pentru orice magazin<br>
+      • <strong>Nu poate</strong> șterge înregistrările din audit log<br>
+      • <strong>Nu poate</strong> modifica NC-ul magazinelor cu decuplare dezactivată
+      (acelea sunt gestionate automat)
+    </p>
+  </div>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:1rem 0 0.75rem">8.2 Comportament sistem când override este activ</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        Adminul setează <code>nc_override_enabled = TRUE</code> și
+        <code>nc_override_value = X.XX%</code> pentru o campanie.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Job-ul automat ignoră complet</strong> această campanie la rularea din
+        prima zi a rundei. NC-ul rămâne la valoarea <code>nc_override_value</code>.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        Dacă adminul dezactivează override-ul (<code>nc_override_enabled = FALSE</code>),
+        campania revine în sistemul automat la <strong>următoarea rulare</strong> (prima zi a rundei).
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        La reactivarea sistemului automat, NC-ul se recalculează conform formulei din §5
+        și se aplică imediat la rularea job-ului.
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:1rem 0 0.75rem">8.3 Interfață admin (UI)</h3>
+  <div class="card">
+    <div class="card-title">Câmpuri necesare în UI</div>
+    <p>
+      În panoul de admin al campaniei, secțiunea <strong>Network Commission</strong> afișează:<br><br>
+      • <strong>NC calculat automat</strong> — valoarea care ar rezulta din formula automată (read-only, afișat întotdeauna)<br>
+      • <strong>Toggle: Decuplare sistem automat</strong> — on/off, vizibil doar pentru <code>special_NT_COM</code><br>
+      • <strong>NC manual</strong> — input numeric activ doar când toggle-ul este ON<br>
+      • <strong>Motiv decuplare</strong> — câmp text obligatoriu la activarea override-ului<br>
+      • <strong>Ultimul override de:</strong> — user + timestamp (read-only)
+    </p>
+  </div>
+
+  <div class="alert danger">
+    <div class="alert-icon">🔴</div>
+    <div class="alert-body">
+      <strong>Validare:</strong> NC manual trebuie să fie în intervalul
+      <code>0.01% – 20.00%</code>. Valorile în afara acestui interval sunt respinse cu eroare.
+      Câmpul „Motiv decuplare" este obligatoriu (minim 10 caractere) pentru a salva un override.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §9 SCHEMA BD ══ -->
+<section class="section" id="db-schema">
+  <div class="section-eyebrow">§9</div>
+  <h2>Schema bază de date</h2>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:0 0 0.75rem">9.1 Tabel: <code>nc_category_rates</code> (nou)</h3>
+  <p style="color:var(--txt2);font-size:0.86rem;margin-bottom:0.75rem">
+    Tabel de configurare al comisioanelor standard pe categorie/subcategorie.
+    Modificabil doar de superadmin. Schimbările intră în vigoare la runda următoare.
+  </p>
+  <div class="db-block">
+    <span class="kw">CREATE TABLE</span> <span class="tbl">nc_category_rates</span> (<br>
+    &nbsp;&nbsp;id                 <span class="kw">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,<br>
+    &nbsp;&nbsp;category           <span class="kw">VARCHAR</span>(100) <span class="kw">NOT NULL</span>,         <span class="cmt">-- ex: "Books"</span><br>
+    &nbsp;&nbsp;subcategory        <span class="kw">VARCHAR</span>(100),                           <span class="cmt">-- ex: "Bookshops" (NULL = valabil pt toata cat.)</span><br>
+    &nbsp;&nbsp;nc_standard_pct    <span class="kw">DECIMAL</span>(5,2) <span class="kw">NOT NULL</span>,          <span class="cmt">-- ex: 4.00</span><br>
+    &nbsp;&nbsp;valid_from         <span class="kw">DATE NOT NULL</span>,                          <span class="cmt">-- data de la care se aplica</span><br>
+    &nbsp;&nbsp;valid_until        <span class="kw">DATE</span>,                                   <span class="cmt">-- NULL = activ curent</span><br>
+    &nbsp;&nbsp;created_by         <span class="kw">INT</span>,                                     <span class="cmt">-- user_id admin</span><br>
+    &nbsp;&nbsp;created_at         <span class="kw">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span><br>
+    );
+  </div>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:1.25rem 0 0.75rem">9.2 Coloane noi pe tabelul campaniei <code>campaigns</code></h3>
+  <div class="db-block">
+    <span class="cmt">-- Coloane adăugate la tabelul existent `campaigns`</span><br><br>
+    nc_auto_value          <span class="kw">DECIMAL</span>(5,2),   <span class="cmt">-- NC calculat de sistem (actualizat la fiecare rundă)</span><br>
+    nc_override_enabled    <span class="kw">BOOLEAN DEFAULT FALSE</span>,   <span class="cmt">-- TRUE = decuplat din sistemul automat</span><br>
+    nc_override_value      <span class="kw">DECIMAL</span>(5,2),   <span class="cmt">-- NC manual setat de special_NT_COM</span><br>
+    nc_override_reason     <span class="kw">TEXT</span>,           <span class="cmt">-- Motiv decuplare (obligatoriu)</span><br>
+    nc_override_by         <span class="kw">INT</span>,             <span class="cmt">-- user_id adminului care a setat override</span><br>
+    nc_override_at         <span class="kw">TIMESTAMP</span>,      <span class="cmt">-- Timestamp ultimului override</span><br>
+    nc_effective_value     <span class="kw">DECIMAL</span>(5,2),   <span class="cmt">-- NC efectiv aplicat (auto sau manual)</span><br>
+    nc_last_updated_at     <span class="kw">TIMESTAMP</span>       <span class="cmt">-- Ultima actualizare NC (auto sau manual)</span>
+  </div>
+
+  <h3 style="font-size:1rem;color:var(--txt2);margin:1.25rem 0 0.75rem">9.3 Tabel: <code>nc_change_log</code> (audit)</h3>
+  <div class="db-block">
+    <span class="kw">CREATE TABLE</span> <span class="tbl">nc_change_log</span> (<br>
+    &nbsp;&nbsp;id                 <span class="kw">BIGINT PRIMARY KEY AUTO_INCREMENT</span>,<br>
+    &nbsp;&nbsp;campaign_id        <span class="kw">INT NOT NULL</span>,<br>
+    &nbsp;&nbsp;changed_at         <span class="kw">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,<br>
+    &nbsp;&nbsp;change_type        <span class="kw">ENUM</span>(<span class="str">'auto'</span>, <span class="str">'manual_override'</span>, <span class="str">'override_removed'</span>),<br>
+    &nbsp;&nbsp;nc_before          <span class="kw">DECIMAL</span>(5,2),  <span class="cmt">-- NC înainte de schimbare</span><br>
+    &nbsp;&nbsp;nc_after           <span class="kw">DECIMAL</span>(5,2),  <span class="cmt">-- NC după schimbare</span><br>
+    &nbsp;&nbsp;nc_standard_used   <span class="kw">DECIMAL</span>(5,2),  <span class="cmt">-- NC standard din tabel categorie (pt calcule auto)</span><br>
+    &nbsp;&nbsp;f_perf_used        <span class="kw">DECIMAL</span>(4,2),  <span class="cmt">-- Factorul de performanță aplicat (pt calcule auto)</span><br>
+    &nbsp;&nbsp;f_loyalty_used     <span class="kw">DECIMAL</span>(4,2),  <span class="cmt">-- Factorul de vechime aplicat (pt calcule auto)</span><br>
+    &nbsp;&nbsp;bl_level_at_change <span class="kw">VARCHAR</span>(50),  <span class="cmt">-- ex: "Unicorns"</span><br>
+    &nbsp;&nbsp;months_active      <span class="kw">INT</span>,           <span class="cmt">-- Luni de activitate la momentul schimbării</span><br>
+    &nbsp;&nbsp;override_reason    <span class="kw">TEXT</span>,          <span class="cmt">-- Completat doar pt manual_override</span><br>
+    &nbsp;&nbsp;changed_by         <span class="kw">INT</span>,            <span class="cmt">-- user_id (NULL pt calcule automate)</span><br>
+    &nbsp;&nbsp;round_id           <span class="kw">INT</span>             <span class="cmt">-- Runda în care s-a efectuat schimbarea</span><br>
+    );
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §10 AUDIT TRAIL ══ -->
+<section class="section" id="audit">
+  <div class="section-eyebrow">§10</div>
+  <h2>Audit trail</h2>
+  <p class="section-desc">
+    Fiecare modificare de NC — automată sau manuală — este înregistrată în
+    <code>nc_change_log</code>. Tabelul este append-only (nu se pot șterge rânduri).
+  </p>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Eveniment</th>
+        <th>change_type</th>
+        <th>Cine inițiază</th>
+        <th>Câmpuri salvate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Job automat modifică NC</td>
+        <td><code>auto</code></td>
+        <td>Sistem (cron)</td>
+        <td>nc_before, nc_after, nc_standard_used, f_perf_used, f_loyalty_used, bl_level, months_active, round_id</td>
+      </tr>
+      <tr>
+        <td>Admin activează override</td>
+        <td><code>manual_override</code></td>
+        <td>User <code>special_NT_COM</code></td>
+        <td>nc_before, nc_after, override_reason, changed_by</td>
+      </tr>
+      <tr>
+        <td>Admin dezactivează override</td>
+        <td><code>override_removed</code></td>
+        <td>User <code>special_NT_COM</code></td>
+        <td>nc_before (valoarea manuală), nc_after (valoarea auto calculată la reactivare), changed_by</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div class="alert-body">
+      <strong>Export:</strong> Tabelul <code>nc_change_log</code> trebuie să fie accesibil
+      prin BigQuery pentru analize. Un view pre-construit
+      <code>analysis.nc_change_log_view</code> va expune datele cu joins pe
+      <code>campaigns</code> și <code>users</code> pentru a facilita exportul operațional.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══ §11 ÎNTREBĂRI DESCHISE ══ -->
+<section class="section" id="open-q">
+  <div class="section-eyebrow">§11</div>
+  <h2>Întrebări deschise — necesită decizie</h2>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q1 — NC minim absolut:</strong> Care este procentul minim sub care NC nu poate
+      coborî indiferent de discounturi combinate? (Exemplu: un magazin Unicorn cu 10+ ani
+      în categoria Pharma ar ajunge la <code>3.00% × 0.75 × 0.50 = 1.13%</code>.)
+      Propunere: <code>0.50%</code> sau <code>1.00%</code>.
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q2 — Magazin fără categorie setată:</strong> Ce NC se aplică dacă un magazin
+      activ nu are categoria/subcategoria mapată în <code>nc_category_rates</code>?
+      Propunere: se aplică valoarea din categoria <code>Others</code> (5.00%) și se trimite
+      alertă internă Ops.
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q3 — Ordinea de execuție:</strong> Confirmați că la prima zi a rundei,
+      tabelul <code>advertisers_business_league_stats_latest</code> este deja actualizat
+      cu nivelurile din runda finalizată înainte de rularea job-ului NC.
+      Dacă nu, job-ul NC trebuie să se execute cu un delay față de update-ul BL.
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q4 — Magazin care iese din BL:</strong> Dacă un magazin nu mai apare în
+      <code>advertisers_business_league_stats_latest</code> (campanie inactivă BL),
+      se consideră automat <code>f_perf = 1.00</code>?
+      Propunere: Da, se tratează ca „Neînscris în BL".
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q5 — Notificare pop-up la schimbare NC automată:</strong>
+      Pop-up-ul de consent (spec nc-popup-spec-v4) apare pentru ORICE schimbare NC automată
+      sau doar dacă NC crește față de valoarea anterioară? Sau indiferent de direcție?
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-body">
+      <strong>Q6 — Campanie cu override la schimbare de categorie:</strong>
+      Dacă un magazin cu <code>nc_override_enabled = TRUE</code> schimbă categoria,
+      sistemul afișează noul NC calculat automat în UI (informativ) dar nu îl aplică?
+      Sau îl aplică automat și dezactivează override-ul?
+    </div>
+  </div>
+</section>
+
+</div><!-- /max-w -->
+</main>
+</div><!-- /layout -->
+</body>
+</html>
