@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="ro" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock-up Interactiv: Main Selling Country - Business League</title>
+  
+  <!-- Fonturi oficiale din Design System (Onest & Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js pentru graficul dinamic de performanță -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Mapping Design Tokens (CSS Variables) - Light & Dark Mode */
+    :root {
+      /* Font-Family */
+      --font-family-base: 'Onest', sans-serif !important;
+      --font-family-inter: 'Inter', sans-serif !important;
+
+      /* Spacing Tokens */
+      --spacing-none: 0rem;
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 0.75rem;
+      --spacing-lg: 1rem;
+      --spacing-xl: 1.25rem;
+      --spacing-2xl: 1.5rem;
+      --spacing-3xl: 2rem;
+      --spacing-4xl: 2.5rem;
+      --spacing-5xl: 3rem;
+      --spacing-6xl: 4rem;
+
+      /* Radii */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-2xl: 1.5rem;
+      --radius-full: 9999px;
+
+      /* Transitions */
+      --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Shadows */
+      --shadow-xs: 0px 1px 2px rgba(16, 24, 40, 0.05);
+      --shadow-sm: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
+      --shadow-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+      --shadow-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
+      --shadow-xl: 0px 20px 24px -4px rgba(16, 24, 40, 0.08), 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+    }
+
+    /* Light Theme Tokens override */
+    html[data-theme="light"] {
+      --color-bg-primary: #ffffff;
+      --color-bg-secondary: #f9fafb;
+      --color-bg-tertiary: #f3f4f6;
+      --color-bg-accent: #f4ebff;
+      --color-bg-brand-solid: #7f56d9;
+      --color-bg-brand-solid-hover: #6941c6;
+      
+      --color-border-primary: #d1d5db;
+      --color-border-secondary: #e5e7eb;
+      --color-border-brand-solid: #7f56d9;
+
+      --color-text-primary-900: #111827;
+      --color-text-secondary-700: #374151;
+      --color-text-tertiary-600: #6b7280;
+      --color-text-brand-900: #53389e;
+
+      --color-status-success-bg: #ecfdf5;
+      --color-status-success-text: #047857;
+      --color-status-info-bg: #eff6ff;
+      --color-status-info-text: #1d4ed8;
+
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(16, 24, 40, 0.08);
+      --color-bg-secondary_hover: rgba(127, 86, 217, 0.04);
+    }
+
+    /* Dark Theme Tokens (Default) */
+    html[data-theme="dark"] {
+      --color-bg-primary: #0c111d;
+      --color-bg-secondary: #161b26;
+      --color-bg-tertiary: #1f242f;
+      --color-bg-accent: #2c1c5f;
+      --color-bg-brand-solid: #7f56d9;
+      --color-bg-brand-solid-hover: #9e77ed;
+
+      --color-border-primary: #333741;
+      --color-border-secondary: #1f242f;
+      --color-border-brand-solid: #9e77ed;
+
+      --color-text-primary-900: #f5f5f6;
+      --color-text-secondary-700: #cecfd2;
+      --color-text-tertiary-600: #94969c;
+      --color-text-brand-900: #e9d7fe;
+
+      --color-status-success-bg: #052e16;
+      --color-status-success-text: #4ade80;
+      --color-status-info-bg: #1e3a8a;
+      --color-status-info-text: #60a5fa;
+
+      --glass-bg: rgba(12, 17, 29, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --color-bg-secondary_hover: rgba(127, 86, 217, 0.08);
+    }
+
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary-900);
+      line-height: 1.5;
+      transition: var(--transition-normal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: var(--font-family-base);
+      cursor: pointer;
+      border: none;
+      background: none;
+      outline: none;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-2xl);
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background-color: var(--color-bg-secondary);
+      border-bottom: 1px solid var(--color-border-secondary);
+      padding: var(--spacing-xl) 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+      background-color: var(--glass-bg);
+      border-bottom-color: var(--glass-border);
+      transition: var(--transition-normal);
+    }
+
+    .navbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo-badge {
+      background-color: var(--color-bg-brand-solid);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(127, 86, 217, 0.4);
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary-900);
+    }
+
+    .logo-text span {
+      color: var(--color-bg-brand-solid);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+      background-color: var(--color-bg-tertiary);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border-secondary);
+    }
+
+    .nav-tab {
+      padding: var(--spacing-sm) var(--spacing-xl);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      color: var(--color-text-tertiary-600);
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .nav-tab.active {
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary-900);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-tab:hover:not(.active) {
+      color: var(--color-text-primary-900);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    /* Premium Theme Toggle Switch */
+    .theme-switch {
+      position: relative;
+      width: 60px;
+      height: 30px;
+      background-color: var(--color-bg-tertiary);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border-primary);
+      transition: var(--transition-normal);
+    }
+
+    .theme-switch-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background-color: var(--color-bg-brand-solid);
+      border-radius: var(--radius-full);
+      transition: var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: var(--shadow-md);
+    }
+
+    html[data-theme="light"] .theme-switch-slider {
+      left: 32px;
+    }
+
+    /* Subviews Wrapper */
+    .view-content {
+      flex: 1;
+      padding: var(--spacing-4xl) 0;
+      opacity: 1;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    .view-content.loading {
+      opacity: 0;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* Banner / Hero */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-accent) 100%);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-5xl) var(--spacing-3xl);
+      margin-bottom: var(--spacing-4xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(127, 86, 217, 0.15) 0%, transparent 70%);
+      border-radius: var(--radius-full);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      background-color: var(--color-bg-accent);
+      color: var(--color-bg-brand-solid);
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--color-border-brand-solid);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .hero-title {
+      font-family: 'Onest', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary-900);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .hero-title span {
+      background: linear-gradient(90deg, #9e77ed 0%, #7f56d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--color-text-secondary-700);
+      font-size: 1.125rem;
+      max-width: 700px;
+    }
+
+    /* HOMEPAGE VIEW: Top Markets Section */
+    .markets-section {
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-4xl) var(--spacing-3xl);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text-primary-900);
+      letter-spacing: -0.01em;
+    }
+
+    .section-description {
+      color: var(--color-text-tertiary-600);
+      font-size: 0.95rem;
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Grid of Countries */
+    .countries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--spacing-xl);
+    }
+
+    .country-card {
+      background-color: var(--color-bg-primary);
+      border: 1px solid var(--color-border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      transition: var(--transition-normal);
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .country-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      transition: var(--transition-fast);
+    }
+
+    .country-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-border-brand-solid);
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(127, 86, 217, 0.1);
+    }
+
+    .country-card:hover::before {
+      background: linear-gradient(90deg, #9e77ed, #7f56d9);
+    }
+
+    .country-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .country-flag {
+      font-size: 2.25rem;
+      line-height: 1;
+      filter: drop-shadow(var(--shadow-sm));
+    }
+
+    .country-info h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text-primary-900);
+    }
+
+    .country-info span {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary-600);
+    }
+
+    .country-stats {
+      margin-bottom: var(--spacing-xl);
+      background-color: var(--color-bg-secondary);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border-secondary);
+    }
+
+    .country-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.825rem;
+      padding: var(--spacing-xs) 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .country-stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: var(--color-text-tertiary-600);
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: var(--color-text-primary-900);
+    }
+
+    .country-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--color-bg-brand-solid);
+      font-size: 0.875rem;
+      font-weight: 700;
+      transition: var(--transition-fast);
+    }
+
+    .country-card-footer svg {
+      width: 16px;
+      height: 16px;
+      transition: var(--transition-fast);
+    }
+
+    .country-card:hover .country-card-footer svg {
+      transform: translateX(4px);
+    }
+
+    /* DEDICATED COUNTRY VIEW */
+    .country-dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .country-title-area {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+
+    .country-title-flag {
+      font-size: 3.5rem;
+      line-height: 1;
+    }
+
+    .country-title-text h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .country-title-text p {
+      color: var(--color-text-tertiary-600);
+      font-size: 0.95rem;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-primary);
+      padding: var(--spacing-sm) var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: var(--transition-fast);
+    }
+
+    .btn-back:hover {
+      background-color: var(--color-bg-tertiary);
+      border-color: var(--color-bg-brand-solid);
+    }
+
+    /* Stats Grid Dashboard */
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .stat-card {
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .stat-card-title {
+      font-size: 0.825rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: var(--color-text-tertiary-600);
+    }
+
+    .stat-card-icon {
+      background-color: var(--color-bg-tertiary);
+      color: var(--color-bg-brand-solid);
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-card-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .stat-card-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--color-text-primary-900);
+      line-height: 1.1;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-card-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+    }
+
+    .stat-indicator-up {
+      background-color: var(--color-status-success-bg);
+      color: var(--color-status-success-text);
+    }
+
+    .stat-indicator-neutral {
+      background-color: var(--color-status-info-bg);
+      color: var(--color-status-info-text);
+    }
+
+    /* Core Content Grid for Country Details */
+    .country-details-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--spacing-2xl);
+      margin-bottom: var(--spacing-4xl);
+    }
+
+    @media (max-width: 992px) {
+      .country-details-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Table Component Customization (Based on TableComponent.md) */
+    .table-container-component {
+      background-color: var(--color-bg-primary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border-primary);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .table-header-caption {
+      background: var(--color-bg-secondary);
+      border-bottom: 1px solid var(--color-border-secondary);
+      padding: var(--spacing-xl) var(--spacing-2xl);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text-primary-900);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .table-tabs-container {
+      display: flex;
+      background-color: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 2px;
+      border: 1px solid var(--color-border-secondary);
+    }
+
+    .table-tab {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: var(--spacing-xs) var(--spacing-lg);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-tertiary-600);
+      transition: var(--transition-fast);
+    }
+
+    .table-tab.active {
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary-900);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* DataTable Raw Styling */
+    .ds-datatable {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .ds-thead {
+      background-color: var(--color-bg-secondary);
+      border-bottom: 1px solid var(--color-border-primary);
+    }
+
+    .ds-thead th {
+      padding: var(--spacing-lg);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--color-text-tertiary-600);
+      border-bottom: 1px solid var(--color-border-primary);
+    }
+
+    .ds-tbody tr {
+      border-bottom: 1px solid var(--color-border-secondary);
+      transition: var(--transition-fast);
+    }
+
+    .ds-tbody tr:hover {
+      background-color: var(--color-bg-secondary_hover);
+    }
+
+    .ds-tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .ds-tbody td {
+      padding: var(--spacing-xl) var(--spacing-lg);
+      font-size: 0.875rem;
+      color: var(--color-text-primary-900);
+      vertical-align: middle;
+    }
+
+    /* Specific Column UI Elements */
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      font-size: 0.75rem;
+    }
+
+    .rank-1 {
+      background: linear-gradient(135deg, #fef08a 0%, #eab308 100%);
+      color: #713f12;
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
+    }
+
+    .rank-2 {
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+      color: #1e293b;
+      box-shadow: 0 0 10px rgba(148, 163, 184, 0.3);
+    }
+
+    .rank-3 {
+      background: linear-gradient(135deg, #fed7aa 0%, #ca8a04 100%);
+      color: #451a03;
+      box-shadow: 0 0 10px rgba(202, 138, 4, 0.3);
+    }
+
+    .rank-other {
+      background-color: var(--color-bg-tertiary);
+      color: var(--color-text-secondary-700);
+    }
+
+    .store-identity {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .store-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg-tertiary);
+      border: 1px solid var(--color-border-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--color-bg-brand-solid);
+      flex-shrink: 0;
+    }
+
+    .store-meta h4 {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .store-meta p {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary-600);
+    }
+
+    .desc-popover {
+      max-width: 250px;
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary-600);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Buttons inside lists */
+    .btn-action-sm {
+      background-color: var(--color-bg-brand-solid);
+      color: #ffffff;
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .btn-action-sm:hover {
+      background-color: var(--color-bg-brand-solid-hover);
+      box-shadow: 0 0 10px rgba(127, 86, 217, 0.3);
+    }
+
+    .btn-secondary-sm {
+      background-color: var(--color-bg-tertiary);
+      color: var(--color-text-primary-900);
+      border: 1px solid var(--color-border-primary);
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: var(--transition-fast);
+    }
+
+    .btn-secondary-sm:hover {
+      background-color: var(--color-bg-secondary);
+      border-color: var(--color-bg-brand-solid);
+    }
+
+    /* Side Widget: Overview & CTA */
+    .side-widget-box {
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
+      position: sticky;
+      top: 100px;
+    }
+
+    .side-widget-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      border-bottom: 2px solid var(--color-border-secondary);
+      padding-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .side-widget-title svg {
+      width: 20px;
+      height: 20px;
+      color: var(--color-bg-brand-solid);
+    }
+
+    .widget-chart-wrapper {
+      background-color: var(--color-bg-primary);
+      border: 1px solid var(--color-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+      height: 180px;
+      position: relative;
+    }
+
+    .widget-cta-banner {
+      background: linear-gradient(135deg, var(--color-bg-accent) 0%, rgba(127, 86, 217, 0.05) 100%);
+      border: 1px solid var(--color-border-brand-solid);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      text-align: center;
+    }
+
+    .widget-cta-banner h4 {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .widget-cta-banner p {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary-700);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .btn-cta-large {
+      background-color: var(--color-bg-brand-solid);
+      color: #ffffff;
+      width: 100%;
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: var(--transition-fast);
+    }
+
+    .btn-cta-large:hover {
+      background-color: var(--color-bg-brand-solid-hover);
+      box-shadow: 0 0 15px rgba(127, 86, 217, 0.4);
+    }
+
+    /* SPECIFICATIONS VIEW */
+    .specs-layout {
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-4xl) var(--spacing-3xl);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .specs-header {
+      border-bottom: 2px solid var(--color-border-secondary);
+      padding-bottom: var(--spacing-xl);
+      margin-bottom: var(--spacing-3xl);
+    }
+
+    .specs-badge {
+      display: inline-block;
+      background-color: #fff3cd;
+      color: #856404;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 3px var(--spacing-md);
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .specs-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+    }
+
+    .specs-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xl);
+      margin-top: var(--spacing-md);
+      font-size: 0.85rem;
+      color: var(--color-text-tertiary-600);
+    }
+
+    .specs-meta-item strong {
+      color: var(--color-text-secondary-700);
+    }
+
+    .specs-container h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-top: var(--spacing-3xl);
+      margin-bottom: var(--spacing-lg);
+      border-left: 4px solid var(--color-bg-brand-solid);
+      padding-left: var(--spacing-sm);
+    }
+
+    .specs-container h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: var(--spacing-2xl);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-bg-brand-solid);
+    }
+
+    .specs-container p {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary-700);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .specs-container ul {
+      margin-left: var(--spacing-2xl);
+      margin-bottom: var(--spacing-md);
+      font-size: 0.925rem;
+      color: var(--color-text-secondary-700);
+    }
+
+    .specs-container li {
+      margin-bottom: var(--spacing-xs);
+    }
+
+    /* Alert Boxes (Based on AlertComponent.md) */
+    .specs-alert {
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      margin: var(--spacing-xl) 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .alert-danger {
+      background-color: rgba(240, 68, 56, 0.1);
+      border: 1px solid #f97066;
+      color: #fda29b;
+    }
+
+    html[data-theme="light"] .alert-danger {
+      background-color: #fef3f2;
+      color: #b42318;
+    }
+
+    .alert-warning {
+      background-color: rgba(240, 165, 0, 0.1);
+      border: 1px solid #f97066; /* Fallback link color or border styling */
+      color: #fed7aa;
+    }
+
+    html[data-theme="light"] .alert-warning {
+      background-color: #fffbeb;
+      color: #b45309;
+    }
+
+    /* Table within Specs */
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--spacing-xl) 0;
+      font-size: 0.85rem;
+    }
+
+    .specs-table th, .specs-table td {
+      border: 1px solid var(--color-border-primary);
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .specs-table th {
+      background-color: var(--color-bg-tertiary);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    /* FOOTER */
+    .footer {
+      background-color: var(--color-bg-secondary);
+      border-top: 1px solid var(--color-border-secondary);
+      padding: var(--spacing-3xl) 0;
+      margin-top: var(--spacing-6xl);
+      text-align: center;
+      font-size: 0.825rem;
+      color: var(--color-text-tertiary-600);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-md);
+      font-weight: 600;
+    }
+
+    /* Modal / Pop-ups simulated dynamically */
+    .toast {
+      position: fixed;
+      bottom: var(--spacing-3xl);
+      right: var(--spacing-3xl);
+      background-color: var(--color-bg-brand-solid);
+      color: #ffffff;
+      padding: var(--spacing-lg) var(--spacing-2xl);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition-normal);
+      pointer-events: none;
+    }
+
+    .toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container navbar-container">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="logo-container" onclick="switchView('homepage', event)">
+        <div class="logo-badge">BL</div>
+        <div class="logo-text">Business<span>League</span></div>
+      </a>
+
+      <!-- Navigation Tabs (Dynamic Router View Switches) -->
+      <div class="nav-tabs">
+        <button class="nav-tab active" id="tab-homepage" onclick="switchView('homepage')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Homepage
+        </button>
+        <button class="nav-tab" id="tab-country" onclick="switchView('country', null, 'RO')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5m1 2.805a9.003 9.003 0 11-11.884-11.883" />
+          </svg>
+          Pagină de Țară
+        </button>
+        <button class="nav-tab" id="tab-specs" onclick="switchView('specs')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Specificații Funcționale
+        </button>
+      </div>
+
+      <!-- Theme Switch and CTA Button -->
+      <div class="nav-actions">
+        <button class="theme-switch" onclick="toggleTheme()" title="Comută Light/Dark Mode">
+          <div class="theme-switch-slider" id="theme-icon">
+            <!-- SVG Luna (Dark mode default) -->
+            <svg xmlns="http://www.w3.org/2000/svg" id="svg-moon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+          </div>
+        </button>
+        <a href="https://businessleague.com/join" target="_blank" class="btn-action-sm" onclick="showToast('Se deschide portalul de onboarding...'); return false;">
+          Alătură-te Ligii
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Main View Content -->
+  <main class="view-content container" id="router-view">
+
+    <!-- ============================================== -->
+    <!-- VIEW 1: HOMEPAGE (Top Countries / Markets) -->
+    <!-- ============================================== -->
+    <div id="view-homepage" class="view-section active">
+      
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Extindere Internațională 2026
+        </div>
+        <h1 class="hero-title">O singură Ligă. <span>Piețe Globale.</span></h1>
+        <p class="hero-subtitle">Descoperă unde se produc cele mai mari performanțe în afiliere. Filtrează brandurile de top și afiliații de elită în funcție de aria principală de operare.</p>
+      </div>
+
+      <!-- Markets Section -->
+      <div class="markets-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Piețe de Performanță Active</h2>
+            <p class="section-description">Top piețe internaționale ordonate după numărul total de Jucători activi (Afiliați + Magazine) în sezonul curent.</p>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--color-text-tertiary-600); font-weight: 600;">
+            Sezonul curent: <span style="color: var(--color-bg-brand-solid)">S1 2026</span>
+          </div>
+        </div>
+
+        <!-- Grid de țări -->
+        <div class="countries-grid">
+          
+          <!-- România -->
+          <div class="country-card" onclick="switchView('country', null, 'RO')">
+            <div>
+              <div class="country-header">
+                <span class="country-flag">🇷🇴</span>
+                <div class="country-info">
+                  <h3>România</h3>
+                  <span>Piața Principală</span>
+                </div>
+              </div>
+              <div class="country-stats">
+                <div class="country-stat-row">
+                  <span class="stat-label">Jucători Activi</span>
+                  <span class="stat-value">12.450</span>
+                </div>
+                <div class="country-stat-row">
+                  <span class="stat-label">Vânzări Sezon</span>
+                  <span class="stat-value">4.120K €</span>
+                </div>
+              </div>
+            </div>
+            <div class="country-card-footer">
+              Explorează Piața
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Bulgaria -->
+          <div class="country-card" onclick="switchView('country', null, 'BG')">
+            <div>
+              <div class="country-header">
+                <span class="country-flag">🇧🇬</span>
+                <div class="country-info">
+                  <h3>Bulgaria</h3>
+                  <span>În Expansiune</span>
+                </div>
+              </div>
+              <div class="country-stats">
+                <div class="country-stat-row">
+                  <span class="stat-label">Jucători Activi</span>
+                  <span class="stat-value">4.120</span>
+                </div>
+                <div class="country-stat-row">
+                  <span class="stat-label">Vânzări Sezon</span>
+                  <span class="stat-value">980K €</span>
+                </div>
+              </div>
+            </div>
+            <div class="country-card-footer">
+              Explorează Piața
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Ungaria -->
+          <div class="country-card" onclick="switchView('country', null, 'HU')">
+            <div>
+              <div class="country-header">
+                <span class="country-flag">🇭🇺</span>
+                <div class="country-info">
+                  <h3>Ungaria</h3>
+                  <span>În Expansiune</span>
+                </div>
+              </div>
+              <div class="country-stats">
+                <div class="country-stat-row">
+                  <span class="stat-label">Jucători Activi</span>
+                  <span class="stat-value">3.240</span>
+                </div>
+                <div class="country-stat-row">
+                  <span class="stat-label">Vânzări Sezon</span>
+                  <span class="stat-value">710K €</span>
+                </div>
+              </div>
+            </div>
+            <div class="country-card-footer">
+              Explorează Piața
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Italia -->
+          <div class="country-card" onclick="switchView('country', null, 'IT')">
+            <div>
+              <div class="country-header">
+                <span class="country-flag">🇮🇹</span>
+                <div class="country-info">
+                  <h3>Italia</h3>
+                  <span>Piață Nouă</span>
+                </div>
+              </div>
+              <div class="country-stats">
+                <div class="country-stat-row">
+                  <span class="stat-label">Jucători Activi</span>
+                  <span class="stat-value">1.890</span>
+                </div>
+                <div class="country-stat-row">
+                  <span class="stat-label">Vânzări Sezon</span>
+                  <span class="stat-value">440K €</span>
+                </div>
+              </div>
+            </div>
+            <div class="country-card-footer">
+              Explorează Piața
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Irlanda -->
+          <div class="country-card" onclick="switchView('country', null, 'IE')">
+            <div>
+              <div class="country-header">
+                <span class="country-flag">🇮🇪</span>
+                <div class="country-info">
+                  <h3>Irlanda</h3>
+                  <span>Strategică</span>
+                </div>
+              </div>
+              <div class="country-stats">
+                <div class="country-stat-row">
+                  <span class="stat-label">Jucători Activi</span>
+                  <span class="stat-value">1.120</span>
+                </div>
+                <div class="country-stat-row">
+                  <span class="stat-label">Vânzări Sezon</span>
+                  <span class="stat-value">250K €</span>
+                </div>
+              </div>
+            </div>
+            <div class="country-card-footer">
+              Explorează Piața
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW 2: DEDICATED COUNTRY LANDING PAGE -->
+    <!-- ============================================== -->
+    <div id="view-country" class="view-section">
+      
+      <!-- Back Header -->
+      <div class="country-dashboard-header">
+        <div class="country-title-area">
+          <span class="country-title-flag" id="country-active-flag">🇷🇴</span>
+          <div class="country-title-text">
+            <h1 id="country-active-name">România</h1>
+            <p>Panoul General de Performanță și Indexul Pieței Locale în <strong style="color: var(--color-bg-brand-solid)">Sezonul Curent</strong></p>
+          </div>
+        </div>
+        <button class="btn-back" onclick="switchView('homepage')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Inapoi pe Homepage
+        </button>
+      </div>
+
+      <!-- Statistici Cheie Dashboard -->
+      <div class="stats-summary-grid">
+        
+        <!-- Active Merchants -->
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Magazine Active (Advertiseri)</span>
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-card-value" id="stat-active-merchants">1.250</div>
+          <div class="stat-card-indicator stat-indicator-up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            +12% vs Sezon Trecut
+          </div>
+        </div>
+
+        <!-- Active Affiliates -->
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Afiliați de Elită</span>
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-card-value" id="stat-active-affiliates">11.200</div>
+          <div class="stat-card-indicator stat-indicator-up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            +8.5% luni recente
+          </div>
+        </div>
+
+        <!-- Clicks Season -->
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Trafic Sezon (Click-uri)</span>
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-card-value" id="stat-clicks-season">48.24M</div>
+          <div class="stat-card-indicator stat-indicator-neutral">
+            Stabil de 30 zile
+          </div>
+        </div>
+
+        <!-- Sales Season -->
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Conversii Aprobate (Vânzări)</span>
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="stat-card-value" id="stat-sales-season">384.500</div>
+          <div class="stat-card-indicator stat-indicator-up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            CR maximă înregistrată
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Core Content Grid -->
+      <div class="country-details-layout">
+        
+        <!-- Left Side: Table Component Directory -->
+        <div>
+          
+          <div class="table-container-component">
+            <!-- Table Header Area -->
+            <div class="table-header-caption">
+              <div class="table-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                </svg>
+                Clasament Elită Locală (Top 10)
+              </div>
+              <div class="table-tabs-container">
+                <button class="table-tab active" id="table-tab-merchants" onclick="switchTableTab('merchants')">Top 10 Magazine</button>
+                <button class="table-tab" id="table-tab-affiliates" onclick="switchTableTab('affiliates')">Top 10 Afiliați</button>
+              </div>
+            </div>
+
+            <!-- Datatable Area -->
+            <div class="ds-datatable">
+              <table class="ds-table" id="data-table-element">
+                <!-- Header and Body are generated dynamically based on active tab & country via JS -->
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Widget Controls / Static Info -->
+        <div>
+          <div class="side-widget-box">
+            
+            <div class="side-widget-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              Performanță Sezonieră
+            </div>
+
+            <p style="font-size: 0.825rem; color: var(--color-text-tertiary-600); line-height: 1.4;">
+              Evoluția vânzărilor aprobate pe lună în rețeaua națională pentru magazinele având această piață principală.
+            </p>
+
+            <!-- Grafic Dinamic -->
+            <div class="widget-chart-wrapper">
+              <canvas id="performanceChart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+
+            <!-- Join the Community CTA Widget -->
+            <div class="widget-cta-banner">
+              <h4 id="cta-country-title">Intră în Liga din România</h4>
+              <p>Reclame locale, afiliați nativi și comisioane maxime de performanță pe această piață.</p>
+              <button class="btn-cta-large" onclick="showToast('Se deschide înregistrarea pe piața locală...')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Înscrie-te în Liga
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW 3: FUNCTIONAL SPECIFICATIONS -->
+    <!-- ============================================== -->
+    <div id="view-specs" class="view-section">
+      
+      <div class="specs-layout">
+        
+        <div class="specs-header">
+          <span class="specs-badge">Draft Propunere Proiect</span>
+          <h1 class="specs-title">Specificații Funcționale: Main Selling Country</h1>
+          
+          <div class="specs-meta">
+            <div class="specs-meta-item">Data Prop: <strong>18 August 2026</strong></div>
+            <div class="specs-meta-item">Autor: <strong>Antigravity AI (Product)</strong></div>
+            <div class="specs-meta-item">Owner Tehnic: <strong>Tiberiu Anghelina</strong></div>
+            <div class="specs-meta-item">Echipă: <strong>Andu R. / Alex M.</strong></div>
+          </div>
+        </div>
+
+        <div class="specs-container">
+          
+          <h2>1. Context Strategic &amp; Problemă</h2>
+          <p>În mod istoric, platforma oferea doar o selecție multiplă de țări unde un magazin trimitea pachete (Shipping Countries). Acest mod de operare ne-a împiedicat să știm cu exactitate unde este localizată activitatea de bază a magazinului (Main Selling Country), afectând negativ:</p>
+          <ul>
+            <li>Organizarea corectă pe țări și campaniile locale administrate de Gabriela Ionescu.</li>
+            <li>Precizia algoritmului de recomandare pentru afiliați.</li>
+            <li>Relevanța directoarelor publice de căutare (un afiliat care căuta magazine în Bulgaria găsea și magazine românești care doar livrau formal la nivel global).</li>
+          </ul>
+          
+          <div class="specs-alert alert-danger">
+            <strong>HARD BLOCK la Înregistrare / Profil (P0):</strong> Nicio înregistrare nouă de magazin nu poate fi validată și niciun magazin existent nu-și poate actualiza profilul fără a selecta explicit un cod unic ISO-3166-1 alpha-2 (țară unică principală de vânzare).
+          </div>
+
+          <h2>2. Planul de Implementare pe Etape</h2>
+          
+          <table class="specs-table">
+            <thead>
+              <tr>
+                <th>Etapă / Prioritate</th>
+                <th>Scurtă Descriere</th>
+                <th>Funcționalități Cheie</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>P0 (Critic - În lucru)</strong></td>
+                <td>Baza de date &amp; Onboarding rigid</td>
+                <td>Coloană nouă <code>main_country</code> în DB. Dropdown obligatoriu în Wizard-ul de onboarding.</td>
+              </tr>
+              <tr>
+                <td><strong>P1 (Ridicat - Programat)</strong></td>
+                <td>Migrare automată &amp; Căutare platformă</td>
+                <td>Rularea scriptului cu euristici de IP-uri pentru conturile existente. Refactorizarea filtrului de căutare a magazinelor în platformă pentru a interoga exclusiv câmpul nou.</td>
+              </tr>
+              <tr>
+                <td><strong>P2 (Mediu - Acest Mock-up)</strong></td>
+                <td>Afisare Publică &amp; Community UI</td>
+                <td>Secțiunea de pe Homepage businessleague.com cu Top 5 piețe după volum total de jucători și Landing Page-uri dedicate fiecărei țări cu clasamente Top 10 integrate.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>3. Detalii Tehnice ale Etapelor Publice (P2)</h2>
+          
+          <h3>3.1 Logica de Calcul pentru Homepage (Top 5 Piețe Active)</h3>
+          <p>La fiecare interval de 24 de ore, un worker de background va rula o agregare din baza de date pentru a recalcula ierarhia țărilor:</p>
+          <ul>
+            <li>Formula de sortare pentru top țări: <code>Număr total de Jucători (înscriși în platformă) = Afiliați activi + Magazine cu main_country definit</code>.</li>
+            <li>Fiecare țară inclusă în top 5 este prevăzută cu o pagină de tip <code>businessleague.com/[country_slug]</code> în mod dinamic, generată automat pentru SEO.</li>
+          </ul>
+
+          <h3>3.2 Specificațiile Paginii de Țară Dedicate</h3>
+          <p>Fiecare pagină dedicată de destinație regională va extrage metrici cumulative calculate strict pe <strong>sezonul curent</strong> al competiției (de exemplu S1 2026):</p>
+          <ul>
+            <li><strong>Total click-uri și vânzări:</strong> Toate tranzacțiile înregistrate în platformă unde magazinul partener are țara respectivă trecută ca <code>main_country</code>.</li>
+            <li><strong>Top 10 Magazine:</strong> Ordonate descrescător după volumul vânzărilor aprobate în sezonul de derulare curent. Include legătură directă ("Join Program") care generează în mod dinamic procesul de afiliere rapidă.</li>
+            <li><strong>Top 10 Afiliați:</strong> Ordonare descrescător după comisioanele aprobate generate în campanii din această țară.</li>
+            <li><strong>Secțiunea de Grafice:</strong> Un grafic bară/linie cu date istorice cumulative lună de lună pentru o monitorizare vizuală performantă.</li>
+          </ul>
+
+          <div class="specs-alert alert-warning">
+            <strong>Notă de Securitate și Confidențialitate:</strong> În cadrul topurilor afișate public pe site-ul de business league, se folosesc exclusiv alias-uri publice (username sau nume magazin) și statistici de volum/procente relative, fără a se expune date financiare private, contracte sau date de contact neaprobate.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="#" onclick="switchView('homepage', event)">Homepage</a>
+        <a href="#" onclick="switchView('specs', event)">Specificații Tehnice</a>
+        <a href="https://businessleague.com/support" target="_blank" onclick="showToast('Se încarcă centrul de asistență...'); return false;">Suport Tehnic</a>
+      </div>
+      <p>© 2026 Business League. Toate drepturile rezervate. Dezvoltat în colaborare cu Antigravity AI.</p>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="global-toast">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span id="toast-message">Notificare</span>
+  </div>
+
+  <script>
+    // Database Mock-up representing real structures for Top Countries and their top merchants/affiliates
+    const countryDatabase = {
+      'RO': {
+        name: 'România',
+        flag: '🇷🇴',
+        merchantsCount: '1.250',
+        affiliatesCount: '11.200',
+        clicks: '48.24M',
+        sales: '384.500',
+        chartData: [45, 52, 63, 58, 68, 85],
+        merchants: [
+          { name: 'DocCheck', category: 'Sănătate & Farmacie', sales: '84.200', activeCampaigns: '12', description: 'Farmacie online de top cu livrare rapidă și rețetă digitală.' },
+          { name: 'Be My Vintage', category: 'Fashion & Accesorii', sales: '62.400', activeCampaigns: '8', description: 'Haine vintage selecționate și accesorii unicat de designer.' },
+          { name: 'Libris', category: 'Cărți & Cadouri', sales: '51.800', activeCampaigns: '15', description: 'Cea mai mare librărie online națională, game largi de autori.' },
+          { name: 'Vivre Home', category: 'Casă & Grădină', sales: '44.300', activeCampaigns: '10', description: 'Decor și mobilier modern cu design minimalist premium.' },
+          { name: 'SportDepot', category: 'Articole Sportive', sales: '38.900', activeCampaigns: '6', description: 'Echipamente originale de fitness, alergare și hiking.' },
+          { name: 'BabyPharma', category: 'Copii & Bebeluși', sales: '32.100', activeCampaigns: '5', description: 'Hrană bio, scutece și accesorii testate clinic de pediatri.' },
+          { name: 'TechZone', category: 'IT & Electronice', sales: '29.400', activeCampaigns: '9', description: 'Gadget-uri smart, telefoane și accesorii high-tech.' },
+          { name: 'BioMarket', category: 'Alimente & Bio', sales: '24.700', activeCampaigns: '7', description: 'Supermarket cu produse certificate ecologic direct de la ferme.' },
+          { name: 'PetFood', category: 'Petshop', sales: '21.000', activeCampaigns: '4', description: 'Hrană premium și jucării inteligente pentru animale de companie.' },
+          { name: 'AutoGlow', category: 'Auto & Moto', sales: '18.500', activeCampaigns: '6', description: 'Cosmetice auto profesionale și accesorii de detailing.' }
+        ],
+        affiliates: [
+          { name: 'Andrei.Popescu', category: 'Content Creator', commission: '18.450 €', clicks: '245.000', conversionRate: '3.2%' },
+          { name: 'ZosoBlog', category: 'Publisher / Portal', commission: '14.200 €', clicks: '410.000', conversionRate: '1.8%' },
+          { name: 'FashionFinds', category: 'Social Media', commission: '12.800 €', clicks: '189.000', conversionRate: '4.1%' },
+          { name: 'ProfitshareExpert', category: 'PPC Specialist', commission: '9.400 €', clicks: '320.000', conversionRate: '1.2%' },
+          { name: 'IuliaReviews', category: 'Influencer', commission: '8.100 €', clicks: '95.000', conversionRate: '5.2%' },
+          { name: 'TechVoucher', category: 'Coduri Reducere', commission: '7.300 €', clicks: '150.000', conversionRate: '2.5%' },
+          { name: 'EcoLiving', category: 'Blog Sănătate', commission: '6.400 €', clicks: '84.000', conversionRate: '3.0%' },
+          { name: 'LauraStyle', category: 'Instagram Content', commission: '5.100 €', clicks: '72.000', conversionRate: '4.5%' },
+          { name: 'CryptoPPC', category: 'Paid Traffic', commission: '4.200 €', clicks: '110.000', conversionRate: '1.5%' },
+          { name: 'GreenMama', category: 'Parenting Portal', commission: '3.800 €', clicks: '58.000', conversionRate: '2.9%' }
+        ]
+      },
+      'BG': {
+        name: 'Bulgaria',
+        flag: '🇧🇬',
+        merchantsCount: '412',
+        affiliatesCount: '3.708',
+        clicks: '14.12M',
+        sales: '98.500',
+        chartData: [21, 28, 32, 30, 39, 48],
+        merchants: [
+          { name: 'Ozone.bg', category: 'Divertisment & Cărți', sales: '32.400', activeCampaigns: '11', description: 'Platformă masivă de gaming, cărți, cadouri și electronice.' },
+          { name: 'Store.bg', category: 'Superstore', sales: '24.100', activeCampaigns: '8', description: 'Unul din cele mai vechi magazine universale cu rețea locală.' },
+          { name: 'Modivo BG', category: 'Fashion & Incaltaminte', sales: '19.800', activeCampaigns: '14', description: 'Haine și încălțăminte de marcă cu retur gratuit.' },
+          { name: 'PharmaBg', category: 'Sănătate', sales: '14.200', activeCampaigns: '6', description: 'Suplimente nutritive și cosmetice terapeutice bulgărești.' },
+          { name: 'SportDepot BG', category: 'Articole Sportive', sales: '11.500', activeCampaigns: '7', description: 'Distribuitor oficial de branduri internaționale pe piața locală.' },
+          { name: 'SofiaBook', category: 'Cărți', sales: '9.400', activeCampaigns: '4', description: 'Librărie fizică și online axată pe literatură clasică și tehnică.' },
+          { name: 'CosmoBg', category: 'Cosmetice', sales: '8.200', activeCampaigns: '5', description: 'Parfumuri și machiaj profesional de la branduri exclusiviste.' },
+          { name: 'KidsWorld', category: 'Copii', sales: '7.100', activeCampaigns: '4', description: 'Jucării interactive, cărucioare și mobilier de grădină.' },
+          { name: 'AutoMax BG', category: 'Auto', sales: '5.900', activeCampaigns: '3', description: 'Piese de schimb auto de înaltă calitate și anvelope.' },
+          { name: 'Zooland Sofia', category: 'Petshop', sales: '4.500', activeCampaigns: '4', description: 'Accesorii profesionale pentru crescătorii de câini și pisici.' }
+        ],
+        affiliates: [
+          { name: 'SofiaDeals', category: 'Portal Reduceri', commission: '7.450 €', clicks: '98.000', conversionRate: '2.8%' },
+          { name: 'Ivan.BG', category: 'Content Creator', commission: '5.200 €', clicks: '45.000', conversionRate: '3.1%' },
+          { name: 'TrendSetterSofia', category: 'Social Media', commission: '4.800 €', clicks: '62.000', conversionRate: '2.5%' },
+          { name: 'PPC_Bulgaria', category: 'PPC Expert', commission: '3.400 €', clicks: '110.000', conversionRate: '1.1%' },
+          { name: 'MariyaReviews', category: 'Influencer', commission: '2.900 €', clicks: '29.000', conversionRate: '4.2%' },
+          { name: 'OzoneFan', category: 'Blog Tech', commission: '2.400 €', clicks: '38.000', conversionRate: '1.9%' },
+          { name: 'PromoBulgaria', category: 'Vouchere', commission: '1.800 €', clicks: '72.000', conversionRate: '1.5%' },
+          { name: 'EcoSofia', category: 'Blog Ecologic', commission: '1.500 €', clicks: '24.000', conversionRate: '2.0%' },
+          { name: 'Dimitar_N', category: 'Email Marketing', commission: '1.100 €', clicks: '18.000', conversionRate: '2.4%' },
+          { name: 'PetyaLifestyle', category: 'Instagram Content', commission: '850 €', clicks: '12.000', conversionRate: '3.5%' }
+        ]
+      },
+      'HU': {
+        name: 'Ungaria',
+        flag: '🇭🇺',
+        merchantsCount: '310',
+        affiliatesCount: '2.930',
+        clicks: '10.84M',
+        sales: '71.500',
+        chartData: [15, 20, 24, 28, 31, 42],
+        merchants: [
+          { name: 'Alza HU', category: 'Electronice & IT', sales: '24.500', activeCampaigns: '12', description: 'Cel mai mare portal de electronice cu livrare rapidă la showroom.' },
+          { name: 'KonyvSziget', category: 'Cărți', sales: '18.200', activeCampaigns: '5', description: 'Rețea de distribuție carte și articole școlare.' },
+          { name: 'Modivo HU', category: 'Fashion & Accesorii', sales: '15.400', activeCampaigns: '11', description: 'Colecții exclusive de îmbrăcăminte din Europa de Vest.' },
+          { name: 'EgeszsegShop', category: 'Sănătate', sales: '11.100', activeCampaigns: '6', description: 'Cosmetice medicale și vitamine organice maghiare.' },
+          { name: 'OtthoniKucko', category: 'Casă & Decor', sales: '8.900', activeCampaigns: '5', description: 'Accesorii handmade și artizanat local pentru locuință.' },
+          { name: 'SportPlaza Budapest', category: 'Sport', sales: '7.200', activeCampaigns: '4', description: 'Echipamente profesionale pentru înot, ciclism și fitness.' },
+          { name: 'BabaVilag', category: 'Copii', sales: '6.000', activeCampaigns: '4', description: 'Produse premium pentru nutriția micuților și jucării din lemn.' },
+          { name: 'BioWeb HU', category: 'Alimente Bio', sales: '5.100', activeCampaigns: '3', description: 'Distribuitor produse vegane și suplimente nutriționale.' },
+          { name: 'Kutyak&Macskak', category: 'Petshop', sales: '3.900', activeCampaigns: '3', description: 'Hrană hypoalergenică pentru animale de companie.' },
+          { name: 'AutoGep HU', category: 'Auto', sales: '2.500', activeCampaigns: '4', description: 'Scule profesionale pentru garaje și service-uri.' }
+        ],
+        affiliates: [
+          { name: 'BudapestDiscounts', category: 'Portal Reduceri', commission: '5.200 €', clicks: '68.000', conversionRate: '2.5%' },
+          { name: 'Gabor_PPC', category: 'PPC Expert', commission: '4.100 €', clicks: '115.000', conversionRate: '1.2%' },
+          { name: 'MagyarReviewer', category: 'Blog Tech', commission: '3.800 €', clicks: '44.000', conversionRate: '2.9%' },
+          { name: 'FashionBudapest', category: 'Social Media', commission: '2.900 €', clicks: '38.000', conversionRate: '2.2%' },
+          { name: 'ZsofiaBeauty', category: 'Influencer', commission: '2.400 €', clicks: '21.000', conversionRate: '4.5%' },
+          { name: 'KuponKucko', category: 'Vouchere', commission: '1.900 €', clicks: '52.000', conversionRate: '1.8%' },
+          { name: 'ZoldElet', category: 'Blog Sănătate', commission: '1.400 €', clicks: '29.000', conversionRate: '1.5%' },
+          { name: 'EszterStyle', category: 'Instagram Content', commission: '1.100 €', clicks: '18.000', conversionRate: '3.0%' },
+          { name: 'PPC_Huszar', category: 'Paid Traffic', commission: '850 €', clicks: '32.000', conversionRate: '1.0%' },
+          { name: 'AnyukaBlog', category: 'Parenting Portal', commission: '600 €', clicks: '12.000', conversionRate: '1.7%' }
+        ]
+      },
+      'IT': {
+        name: 'Italia',
+        flag: '🇮🇹',
+        merchantsCount: '180',
+        affiliatesCount: '1.710',
+        clicks: '6.44M',
+        sales: '44.500',
+        chartData: [8, 12, 19, 17, 24, 38],
+        merchants: [
+          { name: 'ModaMilano', category: 'Fashion & Premium', sales: '18.400', activeCampaigns: '9', description: 'Îmbrăcăminte din materiale premium, fabricate în ateliere din Milano.' },
+          { name: 'BellaCasa IT', category: 'Casă & Grădină', sales: '14.200', activeCampaigns: '6', description: 'Mobilier ceramic, lenjerie fină și accesorii de lux.' },
+          { name: 'SaluteNaturale', category: 'Sănătate & Wellness', sales: '10.800', activeCampaigns: '4', description: 'Cosmetice din ingrediente bio mediteraneene și remedii fitoterapeutice.' },
+          { name: 'SportItalia', category: 'Articole Sportive', sales: '8.300', activeCampaigns: '5', description: 'Biciclete de curse italienești și accesorii de ciclism.' },
+          { name: 'BambinoFelice', category: 'Copii', sales: '6.100', activeCampaigns: '3', description: 'Accesorii de siguranță, cărucioare și haine din bumbac organic.' },
+          { name: 'SaporeItaliano', category: 'Alimente Premium', sales: '5.200', activeCampaigns: '3', description: 'Uleiuri de măsline de colecție și paste artizanale.' },
+          { name: 'ElettroGlow', category: 'IT & Electronice', sales: '4.100', activeCampaigns: '4', description: 'Sisteme de sonorizare smart și iluminat ambiental.' },
+          { name: 'AmiciPelosi', category: 'Petshop', sales: '3.200', activeCampaigns: '2', description: 'Accesorii de design și hrană premium pentru câini mici.' },
+          { name: 'AutoVelocita', category: 'Auto', sales: '2.500', activeCampaigns: '3', description: 'Suporturi, lumini și accesorii sportive pentru autovehicule.' },
+          { name: 'LibreriaRoma', category: 'Cărți', sales: '1.800', activeCampaigns: '2', description: 'Ediții bibliofile și romane istorice tipărite local.' }
+        ],
+        affiliates: [
+          { name: 'MilanoModaBlog', category: 'Content Creator', commission: '4.450 €', clicks: '32.000', conversionRate: '4.2%' },
+          { name: 'OfferteItalia', category: 'Portal Reduceri', commission: '3.200 €', clicks: '74.000', conversionRate: '1.8%' },
+          { name: 'BellaVitaSocial', category: 'Social Media', commission: '2.800 €', clicks: '19.000', conversionRate: '3.8%' },
+          { name: 'PPC_Roma', category: 'PPC Expert', commission: '2.100 €', clicks: '48.000', conversionRate: '1.2%' },
+          { name: 'ChiaraReviews', category: 'Influencer', commission: '1.800 €', clicks: '15.000', conversionRate: '5.0%' },
+          { name: 'KuponiSconti', category: 'Vouchere', commission: '1.300 €', clicks: '29.000', conversionRate: '2.1%' },
+          { name: 'VivereSano', category: 'Blog Sănătate', commission: '980 €', clicks: '14.000', conversionRate: '2.9%' },
+          { name: 'FrancescaInstagram', category: 'Fashion Content', commission: '840 €', clicks: '12.000', conversionRate: '4.1%' },
+          { name: 'TechInItalia', category: 'Blog Tech', commission: '620 €', clicks: '11.000', conversionRate: '2.0%' },
+          { name: 'MammaMilano', category: 'Parenting Portal', commission: '480 €', clicks: '7.000', conversionRate: '2.5%' }
+        ]
+      },
+      'IE': {
+        name: 'Irlanda',
+        flag: '🇮🇪',
+        merchantsCount: '112',
+        affiliatesCount: '1.008',
+        clicks: '4.24M',
+        sales: '24.500',
+        chartData: [4, 6, 9, 11, 15, 24],
+        merchants: [
+          { name: 'DublinTech', category: 'Electronice & IT', sales: '12.200', activeCampaigns: '6', description: 'Distribuitor de componente PC și accesorii de birou smart.' },
+          { name: 'EireVintage', category: 'Fashion & Accesorii', sales: '8.400', activeCampaigns: '5', description: 'Haine vintage din lână tradițională irlandeză și accesorii.' },
+          { name: 'DublinBookDepot', category: 'Cărți', sales: '6.100', activeCampaigns: '4', description: 'Librărie independentă axată pe istorie celtică.' },
+          { name: 'GreenLiving IE', category: 'Casă & Decor', sales: '4.900', activeCampaigns: '4', description: 'Produse de menaj eco și accesorii din materiale reciclate.' },
+          { name: 'EmeraldSports', category: 'Articole Sportive', sales: '3.800', activeCampaigns: '3', description: 'Echipamente de golf, rugby și trekking montan.' },
+          { name: 'OrganicEire', category: 'Alimente Bio', sales: '2.900', activeCampaigns: '2', description: 'Coșuri cu legume direct de la ferme bio și miere brută.' },
+          { name: 'IrishBabyCo', category: 'Copii', sales: '2.100', activeCampaigns: '3', description: 'Hăinuțe ecologice și scutece textile refolosibile.' },
+          { name: 'PharmaDublin', category: 'Sănătate', sales: '1.800', activeCampaigns: '2', description: 'Farmacie locală specializată în vitamine și asistență.' },
+          { name: 'PetEire', category: 'Petshop', sales: '1.200', activeCampaigns: '2', description: 'Jucării eco pentru câini și mâncare organică.' },
+          { name: 'AutoEmerald', category: 'Auto', sales: '950', activeCampaigns: '2', description: 'Accesorii de iarnă auto și truse de urgență.' }
+        ],
+        affiliates: [
+          { name: 'DublinDeals', category: 'Portal Reduceri', commission: '3.200 €', clicks: '44.000', conversionRate: '1.9%' },
+          { name: 'Sean_PPC', category: 'PPC Specialist', commission: '2.400 €', clicks: '58.000', conversionRate: '1.3%' },
+          { name: 'EireTechReviews', category: 'Blog Tech', commission: '1.900 €', clicks: '21.000', conversionRate: '2.8%' },
+          { name: 'IrishFashionista', category: 'Social Media', commission: '1.500 €', clicks: '15.000', conversionRate: '3.5%' },
+          { name: 'AoifeReviews', category: 'Influencer', commission: '1.200 €', clicks: '11.000', conversionRate: '4.0%' },
+          { name: 'VoucherEire', category: 'Vouchere', commission: '950 €', clicks: '18.000', conversionRate: '2.0%' },
+          { name: 'EcoDublin', category: 'Blog Sănătate', commission: '720 €', clicks: '11.000', conversionRate: '2.2%' },
+          { name: 'DublinLaura', category: 'Instagram Content', commission: '580 €', clicks: '9.000', conversionRate: '3.1%' },
+          { name: 'PPC_Dublin', category: 'Paid Traffic', commission: '420 €', clicks: '12.000', conversionRate: '1.1%' },
+          { name: 'IrishMama', category: 'Parenting Portal', commission: '350 €', clicks: '6.000', conversionRate: '2.1%' }
+        ]
+      }
+    };
+
+    let activeCountry = 'RO';
+    let activeTableTab = 'merchants';
+    let performanceChartInstance = null;
+
+    // View Switching Engine (Simple client side SPA router)
+    function switchView(viewId, event, forceCountry) {
+      if (event) event.preventDefault();
+      
+      const routerView = document.getElementById('router-view');
+      routerView.classList.add('loading');
+      
+      setTimeout(() => {
+        // Toggle view sections
+        document.querySelectorAll('.view-section').forEach(view => {
+          view.classList.remove('active');
+        });
+        document.getElementById('view-' + viewId).classList.add('active');
+
+        // Toggle nav-tabs active state
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        if (viewId === 'homepage') {
+          document.getElementById('tab-homepage').classList.add('active');
+        } else if (viewId === 'country') {
+          document.getElementById('tab-country').classList.add('active');
+          if (forceCountry) {
+            activeCountry = forceCountry;
+          }
+          loadCountryDashboard();
+        } else if (viewId === 'specs') {
+          document.getElementById('tab-specs').classList.add('active');
+        }
+
+        routerView.classList.remove('loading');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 200);
+    }
+
+    // Dynamic country dashboard renderer
+    function loadCountryDashboard() {
+      const data = countryDatabase[activeCountry];
+      if (!data) return;
+
+      // Header Texts
+      document.getElementById('country-active-flag').innerText = data.flag;
+      document.getElementById('country-active-name').innerText = data.name;
+      document.getElementById('cta-country-title').innerText = `Intră în Liga din ${data.name}`;
+
+      // Stats cards values
+      document.getElementById('stat-active-merchants').innerText = data.merchantsCount;
+      document.getElementById('stat-active-affiliates').innerText = data.affiliatesCount;
+      document.getElementById('stat-clicks-season').innerText = data.clicks;
+      document.getElementById('stat-sales-season').innerText = data.sales;
+
+      // Render Active Datatable
+      renderDataTable();
+
+      // Render Dynamic Chart
+      renderPerformanceChart(data.chartData);
+    }
+
+    // Table Switching Engine
+    function switchTableTab(tabId) {
+      activeTableTab = tabId;
+      document.getElementById('table-tab-merchants').classList.remove('active');
+      document.getElementById('table-tab-affiliates').classList.remove('active');
+      document.getElementById('table-tab-' + tabId).classList.add('active');
+
+      renderDataTable();
+    }
+
+    // Dynamic Datatable generator implementing components specs
+    function renderDataTable() {
+      const table = document.getElementById('data-table-element');
+      const data = countryDatabase[activeCountry];
+      if (!data) return;
+
+      let html = '';
+
+      if (activeTableTab === 'merchants') {
+        html += `
+          <thead class="ds-thead">
+            <tr>
+              <th style="width: 10%; text-align: center;">Loc</th>
+              <th style="width: 40%;">Nume Magazin / Program</th>
+              <th style="width: 25%; text-align: right;">Vânzări Sezon</th>
+              <th style="width: 25%; text-align: right; padding-right: 24px;">Acțiuni Directe</th>
+            </tr>
+          </thead>
+          <tbody class="ds-tbody">
+        `;
+
+        data.merchants.forEach((m, idx) => {
+          const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+          const firstLetter = m.name.charAt(0);
+          
+          html += `
+            <tr>
+              <td style="text-align: center;">
+                <span class="rank-badge ${rankClass}">${idx + 1}</span>
+              </td>
+              <td>
+                <div class="store-identity">
+                  <div class="store-logo">${firstLetter}</div>
+                  <div class="store-meta">
+                    <h4>${m.name}</h4>
+                    <p class="desc-popover" title="${m.description}">${m.description}</p>
+                  </div>
+                </div>
+              </td>
+              <td style="text-align: right; font-weight: 700;">
+                ${m.sales} €
+              </td>
+              <td style="text-align: right; padding-right: 24px;">
+                <button class="btn-action-sm" onclick="showToast('S-a inițiat cererea de on-boarding pentru programul ${m.name}...')">
+                  Join Program
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody>`;
+
+      } else {
+        html += `
+          <thead class="ds-thead">
+            <tr>
+              <th style="width: 10%; text-align: center;">Loc</th>
+              <th style="width: 35%;">Alias / Utilizator</th>
+              <th style="width: 20%;">Categorie Principală</th>
+              <th style="width: 20%; text-align: right;">Comisioane Aprobate</th>
+              <th style="width: 15%; text-align: right; padding-right: 24px;">Rată Conv.</th>
+            </tr>
+          </thead>
+          <tbody class="ds-tbody">
+        `;
+
+        data.affiliates.forEach((a, idx) => {
+          const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+          
+          html += `
+            <tr>
+              <td style="text-align: center;">
+                <span class="rank-badge ${rankClass}">${idx + 1}</span>
+              </td>
+              <td style="font-weight: 700;">
+                ${a.name}
+              </td>
+              <td>
+                <span style="font-size: 0.75rem; background-color: var(--color-bg-tertiary); color: var(--color-text-secondary-700); padding: 4px var(--spacing-sm); border-radius: var(--radius-sm); border: 1px solid var(--color-border-secondary);">
+                  ${a.category}
+                </span>
+              </td>
+              <td style="text-align: right; font-weight: 700; color: var(--color-status-success-text);">
+                ${a.commission}
+              </td>
+              <td style="text-align: right; padding-right: 24px; font-weight: 600;">
+                ${a.conversionRate}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody>`;
+      }
+
+      table.innerHTML = html;
+    }
+
+    // Interactive chart rendering adapting colors dynamically depending on theme
+    function renderPerformanceChart(chartValues) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      
+      const themeColors = getThemeChartColors();
+
+      if (performanceChartInstance) {
+        performanceChartInstance.destroy();
+      }
+
+      performanceChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug'],
+          datasets: [{
+            label: 'Evoluție Vânzări (€k)',
+            data: chartValues,
+            borderColor: themeColors.primary,
+            backgroundColor: themeColors.gradient,
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: themeColors.primary,
+            pointBorderColor: themeColors.primaryHover,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: themeColors.text,
+                font: {
+                  family: 'Onest',
+                  size: 10
+                }
+              }
+            },
+            y: {
+              grid: {
+                color: themeColors.grid
+              },
+              ticks: {
+                color: themeColors.text,
+                font: {
+                  family: 'Onest',
+                  size: 10
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Extracting current variables dynamic value for Chart.js styling
+    function getThemeChartColors() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      
+      if (isDark) {
+        return {
+          primary: '#9e77ed',
+          primaryHover: '#7f56d9',
+          grid: '#1f242f',
+          text: '#94969c',
+          gradient: 'rgba(158, 119, 237, 0.08)'
+        };
+      } else {
+        return {
+          primary: '#7f56d9',
+          primaryHover: '#6941c6',
+          grid: '#e5e7eb',
+          text: '#6b7280',
+          gradient: 'rgba(127, 86, 217, 0.05)'
+        };
+      }
+    }
+
+    // Toggle Theme (Light vs Dark)
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+
+      // Icon Switch
+      const icon = document.getElementById('theme-icon');
+      if (newTheme === 'light') {
+        icon.innerHTML = `
+          <!-- SVG Soare -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+          </svg>
+        `;
+      } else {
+        icon.innerHTML = `
+          <!-- SVG Luna -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        `;
+      }
+
+      // Re-trigger active dashboard elements (updating colors dynamically)
+      if (document.getElementById('view-country').classList.contains('active')) {
+        const data = countryDatabase[activeCountry];
+        if (data) {
+          renderPerformanceChart(data.chartData);
+        }
+      }
+
+      showToast(`S-a comutat la modul ${newTheme === 'dark' ? 'Dark' : 'Light'}`);
+    }
+
+    // Premium Micro-Notification Engine
+    let toastTimeout = null;
+    function showToast(message) {
+      const toast = document.getElementById('global-toast');
+      document.getElementById('toast-message').innerText = message;
+      
+      toast.classList.add('active');
+      
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+      }
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
